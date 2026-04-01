@@ -1,9 +1,10 @@
 // middleware.ts
-// Protects all dashboard routes and redirects unauthenticated users to /login
-// Enforces three-tier role-based access: ADMIN / DEPT_HEAD / LEADER
+// Lightweight middleware — uses NextAuth session token check only
+// Avoids importing Prisma/bcryptjs which bloat Edge bundle
 
-import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
 const roleHome: Record<string, string> = {
   ADMIN: "/admin",
@@ -11,38 +12,35 @@ const roleHome: Record<string, string> = {
   LEADER: "/leader",
 };
 
-export default auth((req) => {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const session = req.auth;
 
-  // Public paths — allow without session
+  // Public paths
   if (pathname === "/login") return NextResponse.next();
 
+  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+
   // No session → redirect to login
-  if (!session) {
+  if (!token) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  const role = session.user.role;
+  const role = (token.role as string) ?? "LEADER";
   const home = roleHome[role] ?? "/leader";
 
-  // /admin/* — only ADMIN
+  // Role-based access control
   if (pathname.startsWith("/admin") && role !== "ADMIN") {
     return NextResponse.redirect(new URL(home, req.url));
   }
-
-  // /dept/* — only DEPT_HEAD
   if (pathname.startsWith("/dept") && role !== "DEPT_HEAD") {
     return NextResponse.redirect(new URL(home, req.url));
   }
-
-  // /leader/* — only LEADER
   if (pathname.startsWith("/leader") && role !== "LEADER") {
     return NextResponse.redirect(new URL(home, req.url));
   }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
