@@ -56,7 +56,7 @@ export async function getDeptLeaders(departmentId: string | null) {
     select: {
       id: true,
       name: true,
-      email: true,
+      loginId: true,
       phone: true,
       _count: { select: { learners: true, reports: true } },
     },

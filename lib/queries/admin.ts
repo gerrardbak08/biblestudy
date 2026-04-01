@@ -104,7 +104,7 @@ export async function getReportDetail(id: string) {
     include: {
       learner: { select: { name: true, phone: true } },
       leader: {
-        select: { name: true, email: true, department: { select: { name: true } } },
+        select: { name: true, loginId: true, department: { select: { name: true } } },
       },
     },
   });

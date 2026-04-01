@@ -3,10 +3,23 @@
 
 import { z } from "zod";
 
-// Login: basic presence + email format check
+// Login: ID + password
 export const loginSchema = z.object({
-  email: z.string().min(1, "이메일을 입력해주세요").email("유효한 이메일 형식이 아닙니다"),
+  loginId: z.string().min(1, "아이디를 입력해주세요"),
   password: z.string().min(1, "비밀번호를 입력해주세요"),
+});
+
+// Sign up: ID, password (4+), name, department
+export const signupSchema = z.object({
+  loginId: z.string()
+    .min(2, "아이디는 2자 이상이어야 합니다")
+    .max(30, "아이디는 30자 이하여야 합니다")
+    .regex(/^[a-zA-Z0-9_]+$/, "영문, 숫자, 밑줄(_)만 사용 가능합니다"),
+  password: z.string()
+    .min(4, "비밀번호는 4자 이상이어야 합니다")
+    .max(100),
+  name: z.string().min(1, "이름을 입력해주세요").max(50),
+  departmentId: z.string().min(1, "소속을 선택해주세요"),
 });
 
 // Learner registration: name is required, phone/notes are optional
@@ -57,16 +70,17 @@ export const createLeaderSchema = z.object({
     .string()
     .min(1, "이름을 입력해주세요")
     .max(50, "이름은 50자 이하여야 합니다"),
-  email: z
+  loginId: z
     .string()
-    .min(1, "이메일을 입력해주세요")
-    .email("유효한 이메일 형식이 아닙니다"),
+    .min(2, "아이디는 2자 이상이어야 합니다")
+    .max(30)
+    .regex(/^[a-zA-Z0-9_]+$/, "영문, 숫자, 밑줄(_)만 사용 가능합니다"),
   password: z
     .string()
-    .min(8, "비밀번호는 최소 8자 이상이어야 합니다")
+    .min(4, "비밀번호는 4자 이상이어야 합니다")
     .max(100),
   phone: z.string().max(20, "전화번호는 20자 이하여야 합니다").optional(),
-  departmentId: z.string().optional(), // FK to Department
+  departmentId: z.string().optional(),
 });
 
 // Password change
@@ -95,7 +109,8 @@ export const departmentSchema = z.object({
 // Leader update (admin)
 export const updateLeaderSchema = z.object({
   name: z.string().min(1, "이름을 입력해주세요").max(50),
-  email: z.string().min(1, "이메일을 입력해주세요").email("유효한 이메일 형식이 아닙니다"),
+  loginId: z.string().min(2, "아이디는 2자 이상이어야 합니다").max(30)
+    .regex(/^[a-zA-Z0-9_]+$/, "영문, 숫자, 밑줄(_)만 사용 가능합니다"),
   phone: z.string().max(20).optional(),
   departmentId: z.string().optional(),
   role: z.enum(["LEADER", "DEPT_HEAD"]).optional(),

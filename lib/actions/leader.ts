@@ -21,7 +21,7 @@ export async function createLeader(
 
   const raw = {
     name: formData.get("name"),
-    email: formData.get("email"),
+    loginId: formData.get("loginId"),
     password: formData.get("password"),
     phone: formData.get("phone") || undefined,
     departmentId: formData.get("departmentId") || undefined,
@@ -32,13 +32,13 @@ export async function createLeader(
     return { errors: result.error.flatten().fieldErrors };
   }
 
-  const { name, email, password, phone, departmentId } = result.data;
+  const { name, loginId, password, phone, departmentId } = result.data;
 
-  // Check email uniqueness before attempting insert
-  const existing = await prisma.user.findUnique({ where: { email } });
+  // Check loginId uniqueness before attempting insert
+  const existing = await prisma.user.findUnique({ where: { loginId } });
   if (existing) {
     return {
-      errors: { email: ["이미 사용 중인 이메일입니다."] },
+      errors: { loginId: ["이미 사용 중인 이메일입니다."] },
     };
   }
 
@@ -47,7 +47,7 @@ export async function createLeader(
   await prisma.user.create({
     data: {
       name,
-      email,
+      loginId,
       password: hashedPassword,
       role: "LEADER",
       phone: phone || null,
@@ -72,7 +72,7 @@ export async function updateLeader(
 
   const raw = {
     name: formData.get("name"),
-    email: formData.get("email"),
+    loginId: formData.get("loginId"),
     phone: formData.get("phone") || undefined,
     departmentId: formData.get("departmentId") || undefined,
     role: formData.get("role") || undefined,
@@ -83,21 +83,21 @@ export async function updateLeader(
     return { errors: result.error.flatten().fieldErrors };
   }
 
-  const { name, email, phone, departmentId, role } = result.data;
+  const { name, loginId, phone, departmentId, role } = result.data;
 
-  // Check email uniqueness excluding self
+  // Check loginId uniqueness excluding self
   const existing = await prisma.user.findFirst({
-    where: { email, NOT: { id: parsedId.data } },
+    where: { loginId, NOT: { id: parsedId.data } },
   });
   if (existing) {
-    return { errors: { email: ["이미 사용 중인 이메일입니다."] } };
+    return { errors: { loginId: ["이미 사용 중인 이메일입니다."] } };
   }
 
   await prisma.user.update({
     where: { id: parsedId.data },
     data: {
       name,
-      email,
+      loginId,
       phone: phone || null,
       departmentId: departmentId || null,
       role: role ?? "LEADER",

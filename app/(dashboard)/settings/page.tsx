@@ -25,7 +25,7 @@ export default async function SettingsPage() {
               <span className="font-medium">{session.user.name}</span>
             </div>
             <div className="flex justify-between py-1 border-b">
-              <span className="text-muted-foreground">이메일</span>
+              <span className="text-muted-foreground">아이디</span>
               <span>{session.user.email}</span>
             </div>
             <div className="flex justify-between py-1">

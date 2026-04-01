@@ -223,7 +223,7 @@ const curriculumData = [
 
 async function main() {
   // 1. Seed departments
-  const departments = ["1장년", "2장년", "1청년", "2청년", "3청년", "중고등부"];
+  const departments = ["1장년", "2장년", "청년부", "중고등부"];
   const deptRecords: Record<string, string> = {};
 
   for (const name of departments) {
@@ -280,10 +280,10 @@ async function main() {
   const leaderPassword = await bcrypt.hash("leader1234", 10);
 
   const admin = await prisma.user.upsert({
-    where: { email: "admin@church.org" },
+    where: { loginId: "admin" },
     update: {},
     create: {
-      email: "admin@church.org",
+      loginId: "admin",
       name: "담임목사",
       password: adminPassword,
       role: "ADMIN",
@@ -291,63 +291,63 @@ async function main() {
   });
 
   const deptHead = await prisma.user.upsert({
-    where: { email: "youth-head@church.org" },
+    where: { loginId: "depthead1" },
     update: {},
     create: {
-      email: "youth-head@church.org",
+      loginId: "depthead1",
       name: "청년부장",
       password: deptHeadPassword,
       role: "DEPT_HEAD",
-      departmentId: deptRecords["1청년"],
+      departmentId: deptRecords["청년부"],
     },
   });
 
   const leader = await prisma.user.upsert({
-    where: { email: "leader1@church.org" },
+    where: { loginId: "leader1" },
     update: {},
     create: {
-      email: "leader1@church.org",
+      loginId: "leader1",
       name: "리더1",
       password: leaderPassword,
       role: "LEADER",
-      departmentId: deptRecords["1청년"],
+      departmentId: deptRecords["청년부"],
     },
   });
 
   // 4. Seed additional leaders across departments
   const leader2 = await prisma.user.upsert({
-    where: { email: "leader2@church.org" },
+    where: { loginId: "leader2" },
     update: {},
     create: {
-      email: "leader2@church.org",
+      loginId: "leader2",
       name: "리더2",
       password: leaderPassword,
       role: "LEADER",
-      departmentId: deptRecords["1청년"],
+      departmentId: deptRecords["청년부"],
     },
   });
 
   const leader3 = await prisma.user.upsert({
-    where: { email: "leader3@church.org" },
+    where: { loginId: "leader3" },
     update: {},
     create: {
-      email: "leader3@church.org",
+      loginId: "leader3",
       name: "김은혜",
       password: leaderPassword,
       role: "LEADER",
-      departmentId: deptRecords["2청년"],
+      departmentId: deptRecords["1장년"],
     },
   });
 
   const leader4 = await prisma.user.upsert({
-    where: { email: "leader4@church.org" },
+    where: { loginId: "leader4" },
     update: {},
     create: {
-      email: "leader4@church.org",
+      loginId: "leader4",
       name: "박성민",
       password: leaderPassword,
       role: "LEADER",
-      departmentId: deptRecords["장년"],
+      departmentId: deptRecords["2장년"],
     },
   });
 
@@ -445,12 +445,12 @@ async function main() {
   console.log(`Seeded ${reportCount} study reports`);
 
   console.log("Seeded accounts:");
-  console.log(`  Admin:     ${admin.email} / admin1234`);
-  console.log(`  Dept Head: ${deptHead.email} / dept1234`);
-  console.log(`  Leader:    ${leader.email} / leader1234`);
-  console.log(`  Leader2:   ${leader2.email} / leader1234`);
-  console.log(`  Leader3:   ${leader3.email} / leader1234`);
-  console.log(`  Leader4:   ${leader4.email} / leader1234`);
+  console.log(`  Admin:     ${admin.loginId} / admin1234`);
+  console.log(`  Dept Head: ${deptHead.loginId} / dept1234`);
+  console.log(`  Leader:    ${leader.loginId} / leader1234`);
+  console.log(`  Leader2:   ${leader2.loginId} / leader1234`);
+  console.log(`  Leader3:   ${leader3.loginId} / leader1234`);
+  console.log(`  Leader4:   ${leader4.loginId} / leader1234`);
 }
 
 main()

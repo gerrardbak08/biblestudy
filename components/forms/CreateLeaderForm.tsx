@@ -48,15 +48,15 @@ export function CreateLeaderForm({ departments }: CreateLeaderFormProps) {
       </div>
 
       <div className="space-y-1">
-        <Label htmlFor="email">이메일 *</Label>
+        <Label htmlFor="loginId">아이디 *</Label>
         <Input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="leader@church.org"
+          id="loginId"
+          name="loginId"
+          type="text"
+          placeholder="영문, 숫자 (예: leader5)"
           autoComplete="off"
         />
-        <FieldError errors={state.errors.email} />
+        <FieldError errors={state.errors.loginId} />
       </div>
 
       <div className="space-y-1">
@@ -65,7 +65,7 @@ export function CreateLeaderForm({ departments }: CreateLeaderFormProps) {
           id="password"
           name="password"
           type="password"
-          placeholder="최소 8자"
+          placeholder="4자리 이상"
           autoComplete="new-password"
         />
         <FieldError errors={state.errors.password} />

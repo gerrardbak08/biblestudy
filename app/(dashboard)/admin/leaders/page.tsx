@@ -42,7 +42,7 @@ export default async function AdminLeadersPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>이름</TableHead>
-                <TableHead>이메일</TableHead>
+                <TableHead>아이디</TableHead>
                 <TableHead>부서</TableHead>
                 <TableHead>교육생 수</TableHead>
                 <TableHead>보고서 수</TableHead>
@@ -53,7 +53,7 @@ export default async function AdminLeadersPage() {
               {leaders.map((leader) => (
                 <TableRow key={leader.id}>
                   <TableCell className="font-medium">{leader.name}</TableCell>
-                  <TableCell>{leader.email}</TableCell>
+                  <TableCell>{leader.loginId}</TableCell>
                   <TableCell>{leader.department?.name ?? "-"}</TableCell>
                   <TableCell>
                     <Badge variant="secondary">{leader._count.learners}</Badge>

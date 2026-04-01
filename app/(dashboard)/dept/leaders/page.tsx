@@ -40,7 +40,7 @@ export default async function DeptLeadersPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>이름</TableHead>
-                    <TableHead>이메일</TableHead>
+                    <TableHead>아이디</TableHead>
                     <TableHead>연락처</TableHead>
                     <TableHead>교육생</TableHead>
                     <TableHead>보고서</TableHead>
@@ -52,7 +52,7 @@ export default async function DeptLeadersPage() {
                       <TableCell className="font-medium">
                         {leader.name}
                       </TableCell>
-                      <TableCell>{leader.email}</TableCell>
+                      <TableCell>{leader.loginId}</TableCell>
                       <TableCell>{leader.phone ?? "-"}</TableCell>
                       <TableCell>{leader._count.learners}</TableCell>
                       <TableCell>{leader._count.reports}</TableCell>

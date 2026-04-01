@@ -5,10 +5,56 @@
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { changePasswordSchema } from "@/lib/validations";
+import { changePasswordSchema, signupSchema } from "@/lib/validations";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import type { FormState } from "@/types/form";
+
+// Sign up — creates a new LEADER account with department
+export async function signup(
+  _prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const raw = {
+    loginId: formData.get("loginId"),
+    password: formData.get("password"),
+    name: formData.get("name"),
+    departmentId: formData.get("departmentId"),
+  };
+
+  const result = signupSchema.safeParse(raw);
+  if (!result.success) {
+    return { errors: result.error.flatten().fieldErrors };
+  }
+
+  const { loginId, password, name, departmentId } = result.data;
+
+  const existing = await prisma.user.findUnique({ where: { loginId } });
+  if (existing) {
+    return { errors: { loginId: ["이미 사용 중인 아이디입니다."] } };
+  }
+
+  // departmentId may be a department name from signup form — find actual ID
+  const department = await prisma.department.findFirst({
+    where: { OR: [{ id: departmentId }, { name: departmentId }] },
+  });
+  if (!department) {
+    return { errors: { departmentId: ["유효하지 않은 소속입니다."] } };
+  }
+
+  const hashed = await bcrypt.hash(password, 10);
+  await prisma.user.create({
+    data: {
+      loginId,
+      password: hashed,
+      name,
+      role: "LEADER",
+      departmentId: department.id,
+    },
+  });
+
+  redirect("/login");
+}
 
 // Changes the currently authenticated user's password
 export async function changePassword(

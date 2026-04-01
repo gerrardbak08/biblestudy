@@ -36,7 +36,7 @@ model Department {
 // Users: admins, department heads, and leaders
 model User {
   id           String      @id @default(cuid())
-  email        String      @unique
+  loginId      String      @unique // ID for login (replaces email)
   name         String
   password     String      // hashed with bcrypt
   role         Role        @default(LEADER)

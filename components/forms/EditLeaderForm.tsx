@@ -25,7 +25,7 @@ interface EditLeaderFormProps {
   leader: {
     id: string;
     name: string;
-    email: string;
+    loginId: string;
     phone: string | null;
     role: string;
     departmentId: string | null;
@@ -68,9 +68,9 @@ export function EditLeaderForm({ leader, departments }: EditLeaderFormProps) {
         </div>
 
         <div className="space-y-1">
-          <Label htmlFor="email">이메일 *</Label>
-          <Input id="email" name="email" type="email" defaultValue={leader.email} />
-          <FieldError errors={state.errors.email} />
+          <Label htmlFor="loginId">아이디 *</Label>
+          <Input id="loginId" name="loginId" type="text" defaultValue={leader.loginId} />
+          <FieldError errors={state.errors.loginId} />
         </div>
 
         <div className="space-y-1">

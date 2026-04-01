@@ -1,5 +1,5 @@
 // app/(auth)/login/page.tsx
-// Login page — credentials form with Zod client-side validation before calling NextAuth
+// Login page — ID + password credentials login
 
 "use client";
 
@@ -11,11 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-function FieldError({ errors }: { errors?: string[] }) {
-  if (!errors?.length) return null;
-  return <p className="text-xs text-destructive mt-1">{errors[0]}</p>;
-}
+import { FieldError } from "@/components/forms/FieldError";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -31,11 +28,10 @@ export default function LoginPage() {
 
     const formData = new FormData(e.currentTarget);
     const raw = {
-      email: formData.get("email") as string,
+      loginId: formData.get("loginId") as string,
       password: formData.get("password") as string,
     };
 
-    // Client-side Zod validation — gives instant feedback before hitting the server
     const result = loginSchema.safeParse(raw);
     if (!result.success) {
       setFieldErrors(
@@ -46,13 +42,13 @@ export default function LoginPage() {
     }
 
     const res = await signIn("credentials", {
-      email: result.data.email,
+      loginId: result.data.loginId,
       password: result.data.password,
       redirect: false,
     });
 
     if (res?.error) {
-      setAuthError("이메일 또는 비밀번호가 올바르지 않습니다.");
+      setAuthError("아이디 또는 비밀번호가 올바르지 않습니다.");
       setLoading(false);
       return;
     }
@@ -81,15 +77,15 @@ export default function LoginPage() {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
-            <Label htmlFor="email">이메일</Label>
+            <Label htmlFor="loginId">아이디</Label>
             <Input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="example@church.org"
-              autoComplete="email"
+              id="loginId"
+              name="loginId"
+              type="text"
+              placeholder="아이디 입력"
+              autoComplete="username"
             />
-            <FieldError errors={fieldErrors.email} />
+            <FieldError errors={fieldErrors.loginId} />
           </div>
 
           <div className="space-y-1">
@@ -103,15 +99,20 @@ export default function LoginPage() {
             <FieldError errors={fieldErrors.password} />
           </div>
 
-          {/* Auth error from NextAuth (wrong credentials) */}
           {authError && (
-            <p className="text-sm text-destructive">{authError}</p>
+            <p className="text-sm text-destructive" role="alert">{authError}</p>
           )}
 
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "로그인 중..." : "로그인"}
           </Button>
         </form>
+
+        <div className="mt-4 text-center">
+          <Link href="/signup" className="text-sm text-muted-foreground hover:text-foreground">
+            계정이 없으신가요? <span className="text-primary font-medium">회원가입</span>
+          </Link>
+        </div>
       </CardContent>
     </Card>
     </div>

@@ -20,7 +20,7 @@ export default async function EditLeaderPage({
   const [leader, departments] = await Promise.all([
     prisma.user.findUnique({
       where: { id },
-      select: { id: true, name: true, email: true, phone: true, role: true, departmentId: true },
+      select: { id: true, name: true, loginId: true, phone: true, role: true, departmentId: true },
     }),
     prisma.department.findMany({
       select: { id: true, name: true },
