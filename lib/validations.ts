@@ -1,0 +1,129 @@
+// lib/validations.ts
+// Zod schemas for all form inputs — single source of truth for validation rules
+
+import { z } from "zod";
+
+// Login: basic presence + email format check
+export const loginSchema = z.object({
+  email: z.string().min(1, "이메일을 입력해주세요").email("유효한 이메일 형식이 아닙니다"),
+  password: z.string().min(1, "비밀번호를 입력해주세요"),
+});
+
+// Learner registration: name is required, phone/notes are optional
+export const learnerSchema = z.object({
+  name: z
+    .string()
+    .min(1, "이름을 입력해주세요")
+    .max(50, "이름은 50자 이하여야 합니다"),
+  phone: z.string().max(20, "전화번호는 20자 이하여야 합니다").optional(),
+  notes: z.string().max(500, "메모는 500자 이하여야 합니다").optional(),
+});
+
+// Helper: converts empty string or missing value to undefined for optional Int fields
+const optionalLevel = z.preprocess(
+  (v) => (!v || v === "" ? undefined : Number(v)),
+  z.number().int().min(1).max(5).optional()
+);
+
+// Weekly study report — learnerId, weekDate, attended, content are required
+export const reportSchema = z.object({
+  learnerId: z.string().min(1, "교육생을 선택해주세요"),
+  lessonId: z.string().optional(), // optional FK to curriculum lesson
+  weekDate: z.string().min(1, "날짜를 선택해주세요"),
+  attended: z
+    .string()
+    .refine((v) => v === "true" || v === "false", "출석 여부를 선택해주세요"),
+  content: z
+    .string()
+    .min(1, "공부 내용을 입력해주세요")
+    .max(2000, "내용은 2000자 이하여야 합니다"),
+  notes: z.string().max(500, "메모는 500자 이하여야 합니다").optional(),
+  progressStatus: z
+    .string()
+    .refine(
+      (v) => !v || ["진행중", "완료", "중단", "보류"].includes(v),
+      "올바른 진행 상태를 선택해주세요"
+    )
+    .optional(),
+  understandingLevel: optionalLevel,
+  participationLevel: optionalLevel,
+  careLevel: optionalLevel,
+  nextPlan: z.string().max(500, "다음 계획은 500자 이하여야 합니다").optional(),
+});
+
+// Admin creating a new leader account
+export const createLeaderSchema = z.object({
+  name: z
+    .string()
+    .min(1, "이름을 입력해주세요")
+    .max(50, "이름은 50자 이하여야 합니다"),
+  email: z
+    .string()
+    .min(1, "이메일을 입력해주세요")
+    .email("유효한 이메일 형식이 아닙니다"),
+  password: z
+    .string()
+    .min(8, "비밀번호는 최소 8자 이상이어야 합니다")
+    .max(100),
+  phone: z.string().max(20, "전화번호는 20자 이하여야 합니다").optional(),
+  departmentId: z.string().optional(), // FK to Department
+});
+
+// Password change
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "현재 비밀번호를 입력해주세요"),
+    newPassword: z
+      .string()
+      .min(8, "새 비밀번호는 최소 8자 이상이어야 합니다")
+      .max(100),
+    confirmPassword: z.string().min(1, "비밀번호 확인을 입력해주세요"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "비밀번호가 일치하지 않습니다",
+    path: ["confirmPassword"],
+  });
+
+// CUID format validation for entity IDs
+export const idSchema = z.string().min(1, "ID가 필요합니다").regex(/^c[a-z0-9]{24}$/, "유효하지 않은 ID 형식입니다");
+
+// Department management
+export const departmentSchema = z.object({
+  name: z.string().min(1, "부서명을 입력해주세요").max(50, "부서명은 50자 이하여야 합니다"),
+});
+
+// Leader update (admin)
+export const updateLeaderSchema = z.object({
+  name: z.string().min(1, "이름을 입력해주세요").max(50),
+  email: z.string().min(1, "이메일을 입력해주세요").email("유효한 이메일 형식이 아닙니다"),
+  phone: z.string().max(20).optional(),
+  departmentId: z.string().optional(),
+  role: z.enum(["LEADER", "DEPT_HEAD"]).optional(),
+});
+
+// Curriculum management
+export const courseSchema = z.object({
+  name: z.string().min(1, "과정명을 입력해주세요").max(100),
+  level: z.string().min(1, "레벨을 입력해주세요").max(20),
+  order: z.coerce.number().int().min(0, "순서는 0 이상이어야 합니다"),
+});
+
+export const sectionSchema = z.object({
+  code: z.string().min(1, "코드를 입력해주세요").max(20),
+  name: z.string().min(1, "단원명을 입력해주세요").max(100),
+  order: z.coerce.number().int().min(0),
+  courseId: z.string().min(1, "과정을 선택해주세요"),
+});
+
+export const lessonSchema = z.object({
+  code: z.string().min(1, "코드를 입력해주세요").max(20),
+  name: z.string().min(1, "레슨명을 입력해주세요").max(100),
+  order: z.coerce.number().int().min(0),
+  sectionId: z.string().min(1, "단원을 선택해주세요"),
+});
+
+export type LoginInput = z.infer<typeof loginSchema>;
+export type LearnerInput = z.infer<typeof learnerSchema>;
+export type ReportInput = z.infer<typeof reportSchema>;
+export type CreateLeaderInput = z.infer<typeof createLeaderSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;

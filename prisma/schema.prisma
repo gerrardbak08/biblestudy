@@ -1,0 +1,139 @@
+// prisma/schema.prisma
+// Database schema for the church Bible study management platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// User roles — three-tier hierarchy for church Bible study management
+// ADMIN (목회자): full platform oversight
+// DEPT_HEAD (기관장): department-scoped monitoring (e.g. 청년부, 장년부)
+// LEADER (진행자): manages own learners and submits reports
+enum Role {
+  ADMIN
+  DEPT_HEAD
+  LEADER
+}
+
+// Church departments (기관) — e.g. 청년부, 장년부
+model Department {
+  id        String   @id @default(cuid())
+  name      String   @unique // e.g. "청년부", "장년부"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users User[] // all users (DEPT_HEAD + LEADER) in this department
+
+  @@map("departments")
+}
+
+// Users: admins, department heads, and leaders
+model User {
+  id           String      @id @default(cuid())
+  email        String      @unique
+  name         String
+  password     String      // hashed with bcrypt
+  role         Role        @default(LEADER)
+  phone        String?     // optional contact number
+  departmentId String?     // FK to Department (required for DEPT_HEAD and LEADER)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  department Department?    @relation(fields: [departmentId], references: [id])
+  learners   Learner[]     // learners registered by this leader
+  reports    StudyReport[] // reports submitted by this leader
+
+  @@map("users")
+}
+
+// Learners are individuals enrolled in Bible study by a Leader
+model Learner {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String?
+  notes     String?  // optional notes about the learner
+  leaderId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  leader  User          @relation(fields: [leaderId], references: [id], onDelete: Cascade)
+  reports StudyReport[] // all reports submitted about this learner
+
+  @@map("learners")
+}
+
+// Curriculum course — top-level grouping (e.g. 교인등록 과정, 하나님을 경험하는 삶)
+model Course {
+  id       String @id @default(cuid())
+  name     String @unique // e.g. "교인등록 과정"
+  level    String // e.g. "기초", "심화"
+  order    Int    // display order
+
+  sections Section[]
+
+  @@map("courses")
+}
+
+// Section within a course (e.g. "1.회개하고 복음을 믿으라", "C-01.하나님의 뜻과 당신의 삶")
+model Section {
+  id       String @id @default(cuid())
+  code     String // e.g. "1", "C-01"
+  name     String // e.g. "회개하고 복음을 믿으라"
+  order    Int    // display order within course
+  courseId String
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+
+  @@unique([courseId, code])
+  @@map("sections")
+}
+
+// Individual lesson within a section (e.g. "1-01.나는 누구인가")
+model Lesson {
+  id        String @id @default(cuid())
+  code      String // e.g. "1-01", "C-01/01"
+  name      String // e.g. "나는 누구인가"
+  order     Int    // display order within section
+  sectionId String
+
+  section Section       @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  reports StudyReport[] // reports referencing this lesson
+
+  @@unique([sectionId, code])
+  @@map("lessons")
+}
+
+// Weekly study reports submitted by a Leader for each Learner
+model StudyReport {
+  id                 String   @id @default(cuid())
+  weekDate           DateTime // the Monday of the study week (normalized to week start)
+  attended           Boolean  @default(true)
+  content            String   // what was studied (passage, topic, etc.)
+  notes              String?  // leader's observations or prayer points
+  // Assessment fields — each rated 1-5; null means not assessed
+  progressStatus     String?  // overall progress: 진행중 | 완료 | 중단 | 보류
+  understandingLevel Int?     // learner's understanding level (1-5)
+  participationLevel Int?     // learner's participation level (1-5)
+  careLevel          Int?     // pastoral care level needed (1-5)
+  nextPlan           String?  // plan for the next session
+  leaderId           String
+  learnerId          String
+  lessonId           String?  // FK to Lesson — which curriculum lesson was studied
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  leader  User     @relation(fields: [leaderId], references: [id], onDelete: Cascade)
+  learner Learner  @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  lesson  Lesson?  @relation(fields: [lessonId], references: [id])
+
+  // One report per learner per week
+  @@unique([learnerId, weekDate])
+  @@map("study_reports")
+}

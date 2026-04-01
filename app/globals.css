@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 20% 98%;
+    --foreground: 25 30% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 25 30% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 25 30% 12%;
+    --primary: 25 75% 47%;
+    --primary-foreground: 40 100% 97%;
+    --secondary: 35 30% 94%;
+    --secondary-foreground: 25 30% 18%;
+    --muted: 35 15% 93%;
+    --muted-foreground: 25 10% 46%;
+    --accent: 150 25% 92%;
+    --accent-foreground: 150 30% 18%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 35 20% 90%;
+    --input: 35 20% 90%;
+    --ring: 25 75% 47%;
+    --radius: 0.75rem;
+    --shadow-color: 180 27% 55%;
+    --chart-1: 25 75% 47%;
+    --chart-2: 142 71% 45%;
+    --chart-3: 38 92% 50%;
+    --chart-grid: 35 20% 90%;
+    --chart-text: 25 10% 46%;
+  }
+
+  .dark {
+    --background: 25 20% 7%;
+    --foreground: 35 20% 92%;
+    --card: 25 18% 10%;
+    --card-foreground: 35 20% 92%;
+    --popover: 25 18% 10%;
+    --popover-foreground: 35 20% 92%;
+    --primary: 25 70% 55%;
+    --primary-foreground: 25 20% 7%;
+    --secondary: 25 15% 16%;
+    --secondary-foreground: 35 20% 92%;
+    --muted: 25 15% 16%;
+    --muted-foreground: 35 10% 55%;
+    --accent: 150 15% 16%;
+    --accent-foreground: 150 20% 90%;
+    --destructive: 0 62% 35%;
+    --destructive-foreground: 0 0% 95%;
+    --border: 25 15% 16%;
+    --input: 25 15% 16%;
+    --ring: 25 70% 55%;
+    --shadow-color: 25 15% 10%;
+    --chart-1: 25 70% 55%;
+    --chart-2: 142 50% 40%;
+    --chart-3: 38 80% 55%;
+    --chart-grid: 25 15% 22%;
+    --chart-text: 35 10% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-serif), Georgia, serif;
+  }
+  /* Global focus-visible ring for keyboard navigation */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background rounded-sm;
+  }
+  /* Ensure minimum touch target size for interactive elements */
+  button, a, [role="button"] {
+    min-height: 44px;
+  }
+  /* Exception for inline links in text content */
+  p a, td a, li a {
+    min-height: auto;
+  }
+}
