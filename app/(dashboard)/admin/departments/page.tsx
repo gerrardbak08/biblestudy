@@ -1,20 +1,14 @@
 // app/(dashboard)/admin/departments/page.tsx
-// Admin: department list with create form and edit/delete actions
+// Admin: department management — create form + list in bento cards
 
 import { Header } from "@/components/layout/Header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { DepartmentForm } from "@/components/forms/DepartmentForm";
 import { DeleteButton } from "@/components/forms/DeleteButton";
 import { getAdminDepartments } from "@/lib/queries/department-admin";
 import { deleteDepartment } from "@/lib/actions/department";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import Link from "next/link";
 
@@ -23,34 +17,40 @@ export default async function AdminDepartmentsPage() {
 
   return (
     <>
-      <Header title="부서 관리" />
-      <div className="p-4 md:p-6 space-y-6 max-w-3xl">
-        {/* Create form */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">새 부서 추가</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <DepartmentForm />
-          </CardContent>
-        </Card>
+      <Header title="부서 관리" subtitle={`${departments.length}개`} />
+      <div className="p-4 md:p-8 max-w-3xl space-y-0">
 
-        {/* Department list */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">부서 목록</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {departments.length === 0 ? (
-              <EmptyState
-                icon="default"
-                title="등록된 부서가 없습니다"
-                description="위 폼에서 부서를 추가해주세요."
-              />
-            ) : (
+        {/* Section 1: Create */}
+        <section className="mb-8">
+          <div className="section-header">
+            <span className="section-number" aria-hidden="true">1</span>
+            <h3 className="section-title">새 부서 추가</h3>
+          </div>
+          <div className="bento-card">
+            <DepartmentForm />
+          </div>
+        </section>
+
+        <div className="section-divider" />
+
+        {/* Section 2: List */}
+        <section className="mb-8">
+          <div className="section-header">
+            <span className="section-number" aria-hidden="true">2</span>
+            <h3 className="section-title">부서 목록</h3>
+          </div>
+
+          {departments.length === 0 ? (
+            <EmptyState
+              icon="default"
+              title="등록된 부서가 없습니다"
+              description="위 폼에서 부서를 추가해주세요."
+            />
+          ) : (
+            <div className="bento-card !p-0 overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="bg-muted/30">
                     <TableHead>부서명</TableHead>
                     <TableHead>소속 인원</TableHead>
                     <TableHead className="w-28"></TableHead>
@@ -65,7 +65,7 @@ export default async function AdminDepartmentsPage() {
                         <div className="flex items-center gap-2">
                           <Link
                             href={`/admin/departments/${dept.id}/edit`}
-                            className="text-xs text-primary hover:underline"
+                            className="text-xs text-primary hover:underline compact-link"
                           >
                             수정
                           </Link>
@@ -81,9 +81,9 @@ export default async function AdminDepartmentsPage() {
                   ))}
                 </TableBody>
               </Table>
-            )}
-          </CardContent>
-        </Card>
+            </div>
+          )}
+        </section>
       </div>
     </>
   );

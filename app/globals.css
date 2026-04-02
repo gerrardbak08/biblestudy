@@ -4,58 +4,74 @@
 
 @layer base {
   :root {
-    /* Notion/Linear SaaS — Clean, minimal, professional */
-    --background: 0 0% 100%;         /* #FFFFFF pure white */
-    --foreground: 222 47% 11%;       /* #0F172A slate-900 */
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    /* Premium SaaS — designbase/tenet inspired */
+    --background: 220 14% 96%;          /* #F4F5F7 soft gray canvas */
+    --foreground: 224 71% 4%;           /* #020617 near-black */
+    --card: 0 0% 100%;                  /* #FFFFFF white cards */
+    --card-foreground: 224 71% 4%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 217 91% 60%;          /* #2563EB blue-600 */
+    --popover-foreground: 224 71% 4%;
+    --primary: 217 91% 60%;             /* #2563EB blue-600 */
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96%;        /* #F1F5F9 slate-100 */
-    --secondary-foreground: 215 25% 27%; /* #334155 slate-700 */
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%; /* #64748B slate-500 */
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 84% 60%;       /* #EF4444 red-500 */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 9% 46%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 36%;     /* #525B69 — darkened for WCAG AA 4.5:1+ on #F4F5F7 */
+    --accent: 217 91% 97%;              /* #EFF6FF blue-50 */
+    --accent-foreground: 217 91% 45%;   /* darker blue for contrast */
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 214 32% 91%;          /* #E2E8F0 slate-200 */
-    --input: 214 32% 91%;
+    --border: 220 13% 91%;              /* #E5E7EB */
+    --input: 220 13% 91%;
     --ring: 217 91% 60%;
-    --radius: 0.5rem;
-    --chart-1: 217 91% 60%;         /* blue */
-    --chart-2: 142 71% 45%;         /* green */
-    --chart-3: 262 83% 58%;         /* violet */
-    --chart-grid: 214 32% 91%;
-    --chart-text: 215 16% 47%;
+    --radius: 0.75rem;
+
+    /* Semantic status colors */
+    --success: 160 84% 39%;             /* emerald-600 */
+    --warning: 38 92% 50%;              /* amber-500 */
+
+    /* Chart palette */
+    --chart-1: 217 91% 60%;
+    --chart-2: 160 84% 39%;
+    --chart-3: 262 83% 58%;
+    --chart-4: 25 95% 53%;
+    --chart-5: 339 90% 51%;
+    --chart-grid: 220 13% 91%;
+    --chart-text: 220 9% 36%;
+
+    /* Layout tokens */
+    --bento-gap: 1rem;
+    --section-gap: 2rem;
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-    --card: 217 33% 17%;
-    --card-foreground: 210 40% 98%;
-    --popover: 217 33% 17%;
-    --popover-foreground: 210 40% 98%;
+    --background: 224 71% 4%;
+    --foreground: 210 20% 98%;
+    --card: 223 47% 11%;
+    --card-foreground: 210 20% 98%;
+    --popover: 223 47% 11%;
+    --popover-foreground: 210 20% 98%;
     --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 17%;
+    --secondary: 223 47% 11%;
+    --secondary-foreground: 215 20% 65%;
+    --muted: 223 47% 11%;
     --muted-foreground: 215 20% 65%;
     --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
+    --accent-foreground: 217 91% 70%;
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
     --ring: 217 91% 60%;
-    --chart-1: 217 91% 60%;
-    --chart-2: 142 60% 50%;
+    --success: 160 60% 50%;
+    --warning: 38 82% 55%;
+    --chart-1: 217 91% 65%;
+    --chart-2: 160 60% 50%;
     --chart-3: 262 70% 65%;
-    --chart-grid: 217 33% 25%;
+    --chart-4: 25 85% 60%;
+    --chart-5: 339 80% 60%;
+    --chart-grid: 216 34% 20%;
     --chart-text: 215 20% 65%;
   }
 }
@@ -64,20 +80,101 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground antialiased;
   }
-  /* Notion/Linear: sans-serif for everything */
+
+  /* Typography hierarchy */
   h1, h2, h3, h4 {
     @apply font-semibold tracking-tight;
   }
+
+  /* WCAG 2.4.7 — visible focus ring (3:1 contrast minimum) */
   :focus-visible {
-    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background rounded-sm;
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background rounded-sm;
   }
+
+  /* WCAG 2.5.8 — accessible touch targets 44x44px */
   button, a, [role="button"] {
     min-height: 44px;
   }
-  p a, td a, li a {
+  p a, td a, li a, .compact-link {
     min-height: auto;
+  }
+}
+
+@layer utilities {
+  /* Skip to content — WCAG 2.4.1 */
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100]
+      focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2
+      focus:rounded-lg focus:text-sm focus:font-semibold focus:shadow-lg;
+  }
+
+  /* Bento card — elevated white card on gray canvas */
+  .bento-card {
+    @apply bg-card rounded-2xl border border-border/60 p-5
+      transition-all duration-200 ease-out;
+  }
+  .bento-card:hover {
+    @apply shadow-md shadow-black/[0.04] -translate-y-0.5;
+  }
+
+  /* Section header — designbase style numbered section */
+  .section-header {
+    @apply flex items-center gap-3 mb-5;
+  }
+  .section-number {
+    @apply inline-flex items-center justify-center
+      h-7 w-7 rounded-lg bg-primary/10 text-primary
+      text-xs font-bold shrink-0;
+  }
+  .section-title {
+    @apply text-base font-semibold tracking-tight;
+  }
+  .section-desc {
+    @apply text-xs text-muted-foreground mt-0.5;
+  }
+
+  /* Stat typography — big number / small label */
+  .stat-number {
+    @apply text-3xl md:text-4xl font-bold tracking-tight leading-none tabular-nums;
+  }
+  .stat-label {
+    @apply text-[11px] font-semibold tracking-wide text-muted-foreground;
+  }
+
+  /* Divider between major sections */
+  .section-divider {
+    @apply border-t border-border/40 my-8;
+  }
+
+  /* Micro-interactions */
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-up {
+    animation: fade-up 0.4s ease-out both;
+  }
+
+  .stagger-children > * {
+    animation: fade-up 0.4s ease-out both;
+  }
+  .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger-children > *:nth-child(2) { animation-delay: 60ms; }
+  .stagger-children > *:nth-child(3) { animation-delay: 120ms; }
+  .stagger-children > *:nth-child(4) { animation-delay: 180ms; }
+  .stagger-children > *:nth-child(5) { animation-delay: 240ms; }
+  .stagger-children > *:nth-child(6) { animation-delay: 300ms; }
+
+  /* Glass effect */
+  .glass {
+    @apply bg-white/80 backdrop-blur-xl border border-white/20;
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0);
   }
 }

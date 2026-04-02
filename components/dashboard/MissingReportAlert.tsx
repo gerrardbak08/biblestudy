@@ -1,7 +1,8 @@
 // components/dashboard/MissingReportAlert.tsx
-// Alert card showing leaders who haven't submitted this week
+// Alert with CTA — shows missing leaders + action link
 
 import { AlertCircle } from "lucide-react";
+import Link from "next/link";
 
 interface MissingLeader {
   name: string;
@@ -11,21 +12,39 @@ interface MissingLeader {
 
 export function MissingReportAlert({ leaders }: { leaders: MissingLeader[] }) {
   return (
-    <div className="rounded-lg border border-amber-200 bg-amber-50 dark:bg-amber-950/20 dark:border-amber-800 p-4">
+    <div
+      className="bento-card !border-red-200/60 dark:!border-red-800/40 !bg-red-50/50 dark:!bg-red-950/20"
+      role="alert"
+    >
       <div className="flex items-start gap-3">
-        <AlertCircle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+        <div className="h-8 w-8 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center shrink-0">
+          <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
+        </div>
         <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-medium text-amber-900 dark:text-amber-200">
-            이번 주 미제출 리더 {leaders.length}명
-          </h3>
-          <div className="mt-2 flex flex-wrap gap-2">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-red-900 dark:text-red-200">
+                이번 주 미제출 리더
+              </h3>
+              <span className="inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full bg-red-600 text-white text-[10px] font-bold">
+                {leaders.length}
+              </span>
+            </div>
+            <Link
+              href="/admin/leaders"
+              className="text-[11px] font-semibold text-red-700 dark:text-red-300 hover:underline compact-link whitespace-nowrap"
+            >
+              리더 관리 &rarr;
+            </Link>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
             {leaders.map((l) => (
               <span
                 key={l.name}
-                className="inline-flex items-center text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 rounded-md px-2 py-1"
+                className="inline-flex items-center text-xs bg-white/80 dark:bg-red-900/20 text-red-800 dark:text-red-300 rounded-lg px-2.5 py-1 border border-red-200/40 dark:border-red-800/40"
               >
                 {l.name}
-                <span className="text-amber-500 ml-1">({l.department})</span>
+                <span className="text-red-400 dark:text-red-500 ml-1.5">{l.department}</span>
               </span>
             ))}
           </div>

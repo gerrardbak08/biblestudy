@@ -1,10 +1,9 @@
 // app/(dashboard)/dept/page.tsx
-// Department head dashboard — stats + weekly report chart
+// Department head dashboard — hero headline, stats, weekly chart
 
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Header } from "@/components/layout/Header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { WeeklyReportChart } from "@/components/charts/WeeklyReportChart";
 import { getDeptDashboard } from "@/lib/queries/department";
@@ -19,25 +18,46 @@ export default async function DeptDashboardPage() {
 
   return (
     <>
-      <Header title={`${department?.name ?? "부서"} 대시보드`} />
-      <div className="p-4 md:p-6 space-y-6">
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard label="진행자 수" value={totalLeaders} icon={Users} iconColor="text-blue-600 dark:text-blue-400" />
-          <StatCard label="교육생 수" value={totalLearners} icon={GraduationCap} iconColor="text-emerald-600 dark:text-emerald-400" />
-          <StatCard label="총 보고서" value={totalReports} icon={FileText} iconColor="text-amber-600 dark:text-amber-400" />
-          <StatCard label="평균 진도율" value={`${progress.avgPercentage}%`} icon={TrendingUp} iconColor="text-purple-600 dark:text-purple-400" />
-        </div>
+      <Header title="대시보드" subtitle={department?.name ?? "부서"} />
+      <div className="p-4 md:p-8 max-w-[1200px] space-y-0">
 
-        {/* Weekly chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">주간 보고서 제출 현황</CardTitle>
-          </CardHeader>
-          <CardContent>
+        {/* Hero */}
+        <section className="mb-8 animate-fade-up">
+          <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
+            {department?.name ?? "부서"} 교육 현황을
+            <span className="text-primary"> 한눈에</span>
+          </h2>
+          <p className="text-sm text-muted-foreground mt-2">
+            부서 내 진행자·교육생·보고서 현황을 실시간으로 확인합니다.
+          </p>
+        </section>
+
+        {/* Section 1: KPI */}
+        <section className="mb-8">
+          <div className="section-header">
+            <span className="section-number" aria-hidden="true">1</span>
+            <h3 className="section-title">핵심 지표</h3>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 stagger-children">
+            <StatCard label="진행자" value={totalLeaders} icon={Users} iconColor="text-blue-600" />
+            <StatCard label="교육생" value={totalLearners} icon={GraduationCap} iconColor="text-emerald-600" />
+            <StatCard label="보고서" value={totalReports} icon={FileText} iconColor="text-amber-600" />
+            <StatCard label="평균 진도" value={`${progress.avgPercentage}%`} icon={TrendingUp} iconColor="text-violet-600" />
+          </div>
+        </section>
+
+        <div className="section-divider" />
+
+        {/* Section 2: Weekly chart */}
+        <section className="mb-8">
+          <div className="section-header">
+            <span className="section-number" aria-hidden="true">2</span>
+            <h3 className="section-title">주간 보고서 제출 현황</h3>
+          </div>
+          <div className="bento-card">
             <WeeklyReportChart data={weeklyData} />
-          </CardContent>
-        </Card>
+          </div>
+        </section>
       </div>
     </>
   );

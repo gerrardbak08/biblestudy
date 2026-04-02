@@ -1,21 +1,17 @@
 // app/(dashboard)/dept/progress/page.tsx
-// Department-level curriculum progress overview
+// Department progress — stats + learner table
 
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Header } from "@/components/layout/Header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProgressBar } from "@/components/ui/ProgressBar";
+import { StatCard } from "@/components/dashboard/StatCard";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { getProgressStats } from "@/lib/progress";
+import { BookOpen, Users, TrendingUp } from "lucide-react";
 
 export default async function DeptProgressPage() {
   const session = await auth();
@@ -25,54 +21,37 @@ export default async function DeptProgressPage() {
 
   return (
     <>
-      <Header title="부서 진도 현황" />
-      <div className="p-6 space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                전체 레슨 수
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold">{totalLessons}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                교육생 수
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold">{learnerProgress.length}</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                평균 진도율
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-3xl font-bold">{avgPercentage}%</p>
-            </CardContent>
-          </Card>
-        </div>
+      <Header title="진도 현황" subtitle="부서" />
+      <div className="p-4 md:p-8 max-w-[1200px] space-y-0">
 
-        <Card>
-          <CardHeader>
-            <CardTitle>교육생별 진도</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {learnerProgress.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                교육생이 없습니다.
-              </p>
-            ) : (
+        {/* Section 1: Stats */}
+        <section className="mb-8">
+          <div className="section-header">
+            <span className="section-number" aria-hidden="true">1</span>
+            <h3 className="section-title">전체 요약</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 stagger-children">
+            <StatCard label="전체 레슨" value={totalLessons} icon={BookOpen} iconColor="text-blue-600" />
+            <StatCard label="교육생" value={learnerProgress.length} icon={Users} iconColor="text-emerald-600" />
+            <StatCard label="평균 진도" value={`${avgPercentage}%`} icon={TrendingUp} iconColor="text-violet-600" />
+          </div>
+        </section>
+
+        <div className="section-divider" />
+
+        {/* Section 2: Learner detail */}
+        <section className="mb-8">
+          <div className="section-header">
+            <span className="section-number" aria-hidden="true">2</span>
+            <h3 className="section-title">교육생별 진도</h3>
+          </div>
+          {learnerProgress.length === 0 ? (
+            <p className="text-sm text-muted-foreground">교육생이 없습니다.</p>
+          ) : (
+            <div className="bento-card !p-0 overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="bg-muted/30">
                     <TableHead>교육생</TableHead>
                     <TableHead>진행자</TableHead>
                     <TableHead>완료</TableHead>
@@ -83,22 +62,22 @@ export default async function DeptProgressPage() {
                   {learnerProgress.map((l) => (
                     <TableRow key={l.id}>
                       <TableCell className="font-medium">{l.name}</TableCell>
-                      <TableCell>{l.leaderName}</TableCell>
+                      <TableCell className="text-muted-foreground">{l.leaderName}</TableCell>
                       <TableCell>
                         <Badge variant="secondary">
                           {l.completedLessons} / {l.totalLessons}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <ProgressBar percentage={l.percentage} />
+                        <ProgressBar percentage={l.percentage} size="md" />
                       </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-            )}
-          </CardContent>
-        </Card>
+            </div>
+          )}
+        </section>
       </div>
     </>
   );

@@ -1,5 +1,5 @@
 // components/layout/AppShell.tsx
-// Responsive app shell — sidebar on desktop, bottom nav on mobile
+// Responsive app shell — skip-link, sidebar desktop, bottom nav mobile
 
 "use client";
 
@@ -16,17 +16,22 @@ interface AppShellProps {
 export function AppShell({ role, userName, children }: AppShellProps) {
   return (
     <div className="flex min-h-screen bg-background">
-      {/* Desktop sidebar — hidden on mobile */}
+      {/* WCAG 2.4.1 — Skip to main content */}
+      <a href="#main-content" className="skip-link">
+        본문으로 건너뛰기
+      </a>
+
+      {/* Desktop sidebar */}
       <div className="hidden md:block">
         <Sidebar role={role} userName={userName} />
       </div>
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col overflow-auto pb-16 md:pb-0">
+      <main id="main-content" className="flex-1 flex flex-col overflow-auto pb-20 md:pb-0" tabIndex={-1}>
         {children}
       </main>
 
-      {/* Mobile bottom nav — hidden on desktop */}
+      {/* Mobile bottom nav */}
       <BottomNav role={role} />
     </div>
   );

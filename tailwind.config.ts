@@ -1,5 +1,5 @@
 // tailwind.config.ts
-// Tailwind CSS configuration with shadcn/ui color system
+// 2025/2026 Design System — Bento Grid, micro-interactions, premium typography
 
 import type { Config } from "tailwindcss";
 
@@ -13,7 +13,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter", "var(--font-sans)", "Noto Sans KR", "system-ui", "sans-serif"],
+        sans: ["var(--font-sans)", "Inter", "Noto Sans KR", "system-ui", "sans-serif"],
+        serif: ["var(--font-serif)", "Noto Serif KR", "Georgia", "serif"],
       },
       colors: {
         background: "hsl(var(--background))",
@@ -53,12 +54,23 @@ const config: Config = {
           "1": "hsl(var(--chart-1))",
           "2": "hsl(var(--chart-2))",
           "3": "hsl(var(--chart-3))",
+          "4": "hsl(var(--chart-4))",
+          "5": "hsl(var(--chart-5))",
         },
       },
       borderRadius: {
+        "2xl": "1rem",
+        xl: "0.75rem",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        bento: "0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04)",
+        "bento-hover": "0 10px 25px -5px rgb(0 0 0 / 0.06), 0 4px 10px -5px rgb(0 0 0 / 0.04)",
+      },
+      animation: {
+        "fade-up": "fade-up 0.4s ease-out both",
       },
     },
   },

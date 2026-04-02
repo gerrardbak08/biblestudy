@@ -1,5 +1,5 @@
 // app/(dashboard)/leader/learners/page.tsx
-// Leader: list of their own learners with report counts
+// Leader: learner list — bento table, section header, CTA
 
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
@@ -8,13 +8,9 @@ import { Header } from "@/components/layout/Header";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Plus } from "lucide-react";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 
 export default async function LeaderLearnersPage() {
@@ -24,13 +20,21 @@ export default async function LeaderLearnersPage() {
 
   return (
     <>
-      <Header title="내 교육생" />
-      <div className="p-6 space-y-4">
-        <div className="flex justify-end">
+      <Header title="내 교육생" subtitle={`${learners.length}명`} />
+      <div className="p-4 md:p-8 max-w-[1000px] space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="section-header !mb-0">
+            <span className="section-number" aria-hidden="true">1</span>
+            <h3 className="section-title">교육생 목록</h3>
+          </div>
           <Link href="/leader/learners/new">
-            <Button>교육생 등록</Button>
+            <Button className="gap-1.5">
+              <Plus className="h-4 w-4" />
+              교육생 등록
+            </Button>
           </Link>
         </div>
+
         {learners.length === 0 ? (
           <EmptyState
             icon="learners"
@@ -40,33 +44,35 @@ export default async function LeaderLearnersPage() {
             actionHref="/leader/learners/new"
           />
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>이름</TableHead>
-                <TableHead>연락처</TableHead>
-                <TableHead>보고서 수</TableHead>
-                <TableHead></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {learners.map((learner) => (
-                <TableRow key={learner.id}>
-                  <TableCell className="font-medium">{learner.name}</TableCell>
-                  <TableCell>{learner.phone ?? "-"}</TableCell>
-                  <TableCell>{learner._count.reports}</TableCell>
-                  <TableCell>
-                    <Link
-                      href={`/leader/learners/${learner.id}`}
-                      className="text-sm text-primary hover:underline"
-                    >
-                      진도 상세
-                    </Link>
-                  </TableCell>
+          <div className="bento-card !p-0 overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/30">
+                  <TableHead>이름</TableHead>
+                  <TableHead>연락처</TableHead>
+                  <TableHead>보고서</TableHead>
+                  <TableHead className="w-20"></TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {learners.map((learner) => (
+                  <TableRow key={learner.id}>
+                    <TableCell className="font-medium">{learner.name}</TableCell>
+                    <TableCell className="text-muted-foreground">{learner.phone ?? "-"}</TableCell>
+                    <TableCell>{learner._count.reports}</TableCell>
+                    <TableCell>
+                      <Link
+                        href={`/leader/learners/${learner.id}`}
+                        className="text-xs text-primary hover:underline compact-link"
+                      >
+                        진도 상세
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         )}
       </div>
     </>

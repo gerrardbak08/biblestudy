@@ -1,5 +1,5 @@
 // components/layout/BottomNav.tsx
-// Clean mobile bottom nav — minimal style
+// Mobile bottom nav — glass effect, fixed dot indicator positioning
 
 "use client";
 
@@ -59,8 +59,11 @@ export function BottomNav({ role }: BottomNavProps) {
   const tabs = roleTabs[role] ?? leaderTabs;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t md:hidden safe-area-bottom" aria-label="모바일 메뉴">
-      <div className="flex items-center justify-around h-14">
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-xl border-t border-border/40 md:hidden safe-area-bottom"
+      aria-label="모바일 메뉴"
+    >
+      <div className="flex items-center justify-around h-16 max-w-md mx-auto">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = pathname === tab.href ||
@@ -73,14 +76,17 @@ export function BottomNav({ role }: BottomNavProps) {
               aria-current={isActive ? "page" : undefined}
               aria-label={tab.label}
               className={cn(
-                "flex flex-col items-center justify-center gap-0.5 min-h-[44px] px-4 transition-colors",
+                "relative flex flex-col items-center justify-center gap-1 min-h-[44px] min-w-[44px] px-3 transition-all duration-150",
                 isActive
                   ? "text-primary"
-                  : "text-muted-foreground"
+                  : "text-muted-foreground/70"
               )}
             >
-              <Icon className="h-5 w-5" aria-hidden="true" />
-              <span className="text-[10px] font-medium">{tab.label}</span>
+              <Icon className={cn("h-5 w-5 transition-transform", isActive && "scale-110")} aria-hidden="true" />
+              <span className={cn("text-[10px]", isActive ? "font-semibold" : "font-medium")}>{tab.label}</span>
+              {isActive && (
+                <span className="absolute -bottom-0 h-0.5 w-5 rounded-full bg-primary" aria-hidden="true" />
+              )}
             </Link>
           );
         })}

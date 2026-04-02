@@ -1,68 +1,62 @@
 // app/(dashboard)/dept/leaders/page.tsx
-// Lists all leaders in the department head's department
+// Dept head: leader list — bento table
 
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { getDeptLeaders } from "@/lib/queries/department";
 import { Header } from "@/components/layout/Header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 
 export default async function DeptLeadersPage() {
   const session = await auth();
   if (!session) redirect("/login");
-  const departmentId = session.user.departmentId;
 
-  const leaders = await getDeptLeaders(departmentId);
+  const leaders = await getDeptLeaders(session.user.departmentId);
 
   return (
     <>
-      <Header title="부서 리더 관리" />
-      <div className="p-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>리더 목록</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {leaders.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                등록된 리더가 없습니다.
-              </p>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>이름</TableHead>
-                    <TableHead>아이디</TableHead>
-                    <TableHead>연락처</TableHead>
-                    <TableHead>교육생</TableHead>
-                    <TableHead>보고서</TableHead>
+      <Header title="부서 리더" subtitle={`${leaders.length}명`} />
+      <div className="p-4 md:p-8 max-w-[1200px] space-y-6">
+        <div className="section-header">
+          <span className="section-number" aria-hidden="true">1</span>
+          <h3 className="section-title">리더 목록</h3>
+        </div>
+
+        {leaders.length === 0 ? (
+          <p className="text-sm text-muted-foreground">등록된 리더가 없습니다.</p>
+        ) : (
+          <div className="bento-card !p-0 overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/30">
+                  <TableHead>이름</TableHead>
+                  <TableHead>아이디</TableHead>
+                  <TableHead>연락처</TableHead>
+                  <TableHead>교육생</TableHead>
+                  <TableHead>보고서</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {leaders.map((leader) => (
+                  <TableRow key={leader.id}>
+                    <TableCell className="font-medium">{leader.name}</TableCell>
+                    <TableCell className="text-muted-foreground">{leader.loginId}</TableCell>
+                    <TableCell>{leader.phone ?? "-"}</TableCell>
+                    <TableCell>
+                      <Badge variant="secondary">{leader._count.learners}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="secondary">{leader._count.reports}</Badge>
+                    </TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {leaders.map((leader) => (
-                    <TableRow key={leader.id}>
-                      <TableCell className="font-medium">
-                        {leader.name}
-                      </TableCell>
-                      <TableCell>{leader.loginId}</TableCell>
-                      <TableCell>{leader.phone ?? "-"}</TableCell>
-                      <TableCell>{leader._count.learners}</TableCell>
-                      <TableCell>{leader._count.reports}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </CardContent>
-        </Card>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        )}
       </div>
     </>
   );

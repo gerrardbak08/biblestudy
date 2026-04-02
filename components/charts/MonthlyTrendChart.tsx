@@ -1,5 +1,5 @@
 // components/charts/MonthlyTrendChart.tsx
-// Line chart showing monthly report submission trend
+// Modern area chart — smooth gradient fill, no grid
 
 "use client";
 
@@ -8,7 +8,6 @@ import {
   Area,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
@@ -28,18 +27,36 @@ export function MonthlyTrendChart({ data }: { data: MonthlyData[] }) {
 
   return (
     <div role="img" aria-label="월별 보고서 추이 차트">
-      <ResponsiveContainer width="100%" height={250}>
+      <ResponsiveContainer width="100%" height={220}>
         <AreaChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
-          <XAxis dataKey="month" fontSize={11} stroke="hsl(var(--chart-text))" />
-          <YAxis allowDecimals={false} fontSize={11} stroke="hsl(var(--chart-text))" />
+          <defs>
+            <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="hsl(var(--chart-1))" stopOpacity={0.2} />
+              <stop offset="100%" stopColor="hsl(var(--chart-1))" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <XAxis
+            dataKey="month"
+            fontSize={11}
+            tickLine={false}
+            axisLine={false}
+            stroke="hsl(var(--chart-text))"
+          />
+          <YAxis
+            allowDecimals={false}
+            fontSize={11}
+            tickLine={false}
+            axisLine={false}
+            stroke="hsl(var(--chart-text))"
+            width={30}
+          />
           <Tooltip
             contentStyle={{
               backgroundColor: "hsl(var(--card))",
               borderColor: "hsl(var(--border))",
-              color: "hsl(var(--card-foreground))",
-              borderRadius: "0.375rem",
+              borderRadius: "12px",
               fontSize: "12px",
+              boxShadow: "0 10px 25px -5px rgb(0 0 0 / 0.08)",
             }}
           />
           <Area
@@ -47,9 +64,8 @@ export function MonthlyTrendChart({ data }: { data: MonthlyData[] }) {
             dataKey="count"
             name="보고서 수"
             stroke="hsl(var(--chart-1))"
-            fill="hsl(var(--chart-1))"
-            fillOpacity={0.1}
-            strokeWidth={2}
+            fill="url(#colorCount)"
+            strokeWidth={2.5}
           />
         </AreaChart>
       </ResponsiveContainer>

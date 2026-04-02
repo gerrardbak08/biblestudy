@@ -1,5 +1,5 @@
 // components/charts/WeeklyReportChart.tsx
-// Bar chart showing weekly report submission counts
+// Modern bar chart — rounded bars, no grid, clean tooltip
 
 "use client";
 
@@ -8,7 +8,6 @@ import {
   Bar,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
@@ -32,20 +31,39 @@ export function WeeklyReportChart({ data }: { data: WeeklyData[] }) {
 
   return (
     <div role="img" aria-label="주간 보고서 제출 현황 차트">
-      <ResponsiveContainer width="100%" height={250}>
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--chart-grid))" />
-          <XAxis dataKey="week" fontSize={12} stroke="hsl(var(--chart-text))" />
-          <YAxis allowDecimals={false} fontSize={12} stroke="hsl(var(--chart-text))" />
+      <ResponsiveContainer width="100%" height={220}>
+        <BarChart data={data} barSize={28}>
+          <XAxis
+            dataKey="week"
+            fontSize={11}
+            tickLine={false}
+            axisLine={false}
+            stroke="hsl(var(--chart-text))"
+          />
+          <YAxis
+            allowDecimals={false}
+            fontSize={11}
+            tickLine={false}
+            axisLine={false}
+            stroke="hsl(var(--chart-text))"
+            width={30}
+          />
           <Tooltip
+            cursor={{ fill: "hsl(var(--muted))", radius: 8 }}
             contentStyle={{
               backgroundColor: "hsl(var(--card))",
               borderColor: "hsl(var(--border))",
-              color: "hsl(var(--card-foreground))",
-              borderRadius: "0.5rem",
+              borderRadius: "12px",
+              fontSize: "12px",
+              boxShadow: "0 10px 25px -5px rgb(0 0 0 / 0.08)",
             }}
           />
-          <Bar dataKey="count" name="보고서 수" fill="hsl(var(--chart-1))" radius={[4, 4, 0, 0]} />
+          <Bar
+            dataKey="count"
+            name="보고서 수"
+            fill="hsl(var(--chart-1))"
+            radius={[8, 8, 4, 4]}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>

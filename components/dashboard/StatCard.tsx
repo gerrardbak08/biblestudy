@@ -1,7 +1,6 @@
 // components/dashboard/StatCard.tsx
-// Reusable stats card for dashboard overview pages
+// Bento stat card — big number / small label / background watermark icon
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { LucideIcon } from "lucide-react";
 
 interface StatCardProps {
@@ -9,24 +8,29 @@ interface StatCardProps {
   value: string | number;
   icon?: LucideIcon;
   iconColor?: string;
+  trend?: string;
 }
 
-export function StatCard({ label, value, icon: Icon, iconColor }: StatCardProps) {
+export function StatCard({ label, value, icon: Icon, iconColor, trend }: StatCardProps) {
   return (
-    <Card>
-      <CardHeader className="pb-2">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-xs font-medium text-muted-foreground">
-            {label}
-          </CardTitle>
-          {Icon && (
-            <Icon className={`h-4 w-4 ${iconColor ?? "text-muted-foreground"}`} aria-hidden="true" />
+    <div className="bento-card group relative overflow-hidden">
+      {/* Background watermark icon */}
+      {Icon && (
+        <Icon
+          className={`absolute -right-2 -top-2 h-16 w-16 opacity-[0.06] ${iconColor ?? "text-muted-foreground"}`}
+          aria-hidden="true"
+        />
+      )}
+
+      <div className="relative">
+        <p className="stat-label mb-2">{label}</p>
+        <div className="flex items-end gap-2">
+          <p className="stat-number" aria-label={`${label} ${value}`}>{value}</p>
+          {trend && (
+            <span className="text-xs font-semibold text-emerald-600 mb-1">{trend}</span>
           )}
         </div>
-      </CardHeader>
-      <CardContent>
-        <p className="text-2xl md:text-3xl font-bold">{value}</p>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

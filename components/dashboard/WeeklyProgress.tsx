@@ -1,8 +1,8 @@
 // components/dashboard/WeeklyProgress.tsx
-// Visual weekly submission progress for leader dashboard
+// Modern weekly progress — clean list, animated progress
 
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Circle } from "lucide-react";
+import { CheckCircle2, Circle } from "lucide-react";
 
 interface LearnerStatus {
   id: string;
@@ -21,23 +21,25 @@ export function WeeklyProgress({ learners, totalReports }: WeeklyProgressProps) 
   const percentage = total > 0 ? Math.round((submitted / total) * 100) : 0;
 
   return (
-    <div className="rounded-xl border bg-card p-5 space-y-4">
+    <div className="bento-card space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-sm">이번 주 현황</h3>
-        <Badge variant="secondary" className="text-xs">
-          총 {totalReports}건 제출
+        <Badge variant="secondary" className="text-[11px] font-medium rounded-lg">
+          총 {totalReports}건
         </Badge>
       </div>
 
-      {/* Progress bar */}
+      {/* Progress */}
       <div className="space-y-2">
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span>제출 {submitted} / {total}명</span>
-          <span>{percentage}%</span>
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-muted-foreground">
+            제출 {submitted} / {total}명
+          </span>
+          <span className="text-sm font-bold text-primary tabular-nums">{percentage}%</span>
         </div>
-        <div className="h-2 bg-secondary rounded-full overflow-hidden">
+        <div className="h-2 bg-muted/60 rounded-full overflow-hidden">
           <div
-            className="h-full bg-primary rounded-full transition-all duration-500"
+            className="h-full bg-primary rounded-full transition-all duration-700 ease-out"
             style={{ width: `${percentage}%` }}
           />
         </div>
@@ -45,22 +47,22 @@ export function WeeklyProgress({ learners, totalReports }: WeeklyProgressProps) 
 
       {/* Learner list */}
       {total > 0 && (
-        <div className="space-y-1.5">
+        <div className="space-y-0.5">
           {learners.map((learner) => (
             <div
               key={learner.id}
-              className="flex items-center gap-2 text-sm py-1"
+              className="flex items-center gap-2.5 text-sm py-1.5 px-2 rounded-lg hover:bg-muted/40 transition-colors"
             >
               {learner.submitted ? (
-                <CheckCircle className="h-4 w-4 text-primary shrink-0" />
+                <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
               ) : (
-                <Circle className="h-4 w-4 text-muted-foreground/40 shrink-0" />
+                <Circle className="h-4 w-4 text-muted-foreground/30 shrink-0" />
               )}
-              <span className={learner.submitted ? "text-foreground" : "text-muted-foreground"}>
+              <span className={learner.submitted ? "text-foreground font-medium" : "text-muted-foreground"}>
                 {learner.name}
               </span>
               {!learner.submitted && (
-                <span className="text-[10px] text-muted-foreground ml-auto">미제출</span>
+                <span className="text-[10px] text-red-500/70 font-medium ml-auto">미제출</span>
               )}
             </div>
           ))}
@@ -68,7 +70,7 @@ export function WeeklyProgress({ learners, totalReports }: WeeklyProgressProps) 
       )}
 
       {total === 0 && (
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground py-4 text-center">
           등록된 교육생이 없습니다.
         </p>
       )}
