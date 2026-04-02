@@ -12,7 +12,7 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import type { FormState } from "@/types/form";
 
-// Server-side login — more reliable than client-side signIn on Vercel
+// Server-side login — returns success/failure, no redirect
 export async function login(
   _prevState: FormState,
   formData: FormData
@@ -31,16 +31,16 @@ export async function login(
     await signIn("credentials", {
       loginId: result.data.loginId,
       password: result.data.password,
-      redirectTo: "/",
+      redirect: false,
     });
   } catch (error) {
     if (error instanceof AuthError) {
       return { errors: {}, message: "아이디 또는 비밀번호가 올바르지 않습니다." };
     }
-    throw error; // NEXT_REDIRECT — let Next.js handle it
+    // NextAuth v5 may throw NEXT_REDIRECT even with redirect:false — treat as success
   }
 
-  return { errors: {} };
+  return { errors: {}, message: "SUCCESS" };
 }
 
 // Sign up — creates a new LEADER account with department
