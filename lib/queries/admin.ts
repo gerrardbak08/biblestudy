@@ -169,6 +169,92 @@ async function getMissingReportLeaders() {
     }));
 }
 
+/** Detailed leader → learner → course progress matrix */
+export async function getLeaderLearnerProgressMatrix() {
+  const leaders = await prisma.user.findMany({
+    where: { role: "LEADER", learners: { some: {} } },
+    select: {
+      id: true,
+      name: true,
+      department: { select: { name: true } },
+      learners: {
+        select: {
+          id: true,
+          name: true,
+          reports: {
+            where: { lessonId: { not: null } },
+            select: {
+              lessonId: true,
+              lesson: {
+                select: {
+                  section: {
+                    select: {
+                      course: { select: { id: true, name: true, level: true } },
+                    },
+                  },
+                },
+              },
+            },
+            distinct: ["lessonId"],
+          },
+        },
+        orderBy: { name: "asc" },
+      },
+    },
+    orderBy: { name: "asc" },
+  });
+
+  const courses = await prisma.course.findMany({
+    select: {
+      id: true,
+      name: true,
+      level: true,
+      _count: { select: { sections: true } },
+      sections: { select: { _count: { select: { lessons: true } } } },
+    },
+    orderBy: { order: "asc" },
+  });
+
+  const courseInfo = courses.map((c) => ({
+    id: c.id,
+    name: c.name,
+    level: c.level,
+    totalLessons: c.sections.reduce((s, sec) => s + sec._count.lessons, 0),
+  }));
+
+  const matrix = leaders.map((leader) => ({
+    leaderName: leader.name,
+    department: leader.department?.name ?? "-",
+    learners: leader.learners.map((learner) => {
+      // Count completed lessons per course
+      const courseProgress = new Map<string, number>();
+      for (const report of learner.reports) {
+        if (report.lesson) {
+          const courseId = report.lesson.section.course.id;
+          courseProgress.set(courseId, (courseProgress.get(courseId) ?? 0) + 1);
+        }
+      }
+
+      return {
+        name: learner.name,
+        totalCompleted: learner.reports.length,
+        courses: courseInfo.map((c) => ({
+          courseId: c.id,
+          courseName: c.name,
+          level: c.level,
+          completed: courseProgress.get(c.id) ?? 0,
+          total: c.totalLessons,
+          percentage: c.totalLessons > 0
+            ? Math.round(((courseProgress.get(c.id) ?? 0) / c.totalLessons) * 100)
+            : 0,
+        })),
+      };
+    }),
+  }));
+
+  return { matrix, courseInfo };
+}
+
 /** Admin leaders list with counts */
 export async function getAdminLeaders() {
   return prisma.user.findMany({
