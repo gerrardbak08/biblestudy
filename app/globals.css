@@ -4,60 +4,62 @@
 
 @layer base {
   :root {
-    --background: 40 20% 98%;
-    --foreground: 25 30% 12%;
-    --card: 0 0% 100%;
-    --card-foreground: 25 30% 12%;
+    /* Morning Calm — "The Sanctuary Aesthetic" */
+    --background: 43 25% 97%;       /* #FAF9F5 warm cream */
+    --foreground: 96 4% 11%;        /* #1B1C1A */
+    --card: 0 0% 100%;              /* #FFFFFF */
+    --card-foreground: 96 4% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 25 30% 12%;
-    --primary: 25 75% 47%;
-    --primary-foreground: 40 100% 97%;
-    --secondary: 35 30% 94%;
-    --secondary-foreground: 25 30% 18%;
-    --muted: 35 15% 93%;
-    --muted-foreground: 25 10% 46%;
-    --accent: 150 25% 92%;
-    --accent-foreground: 150 30% 18%;
-    --destructive: 0 72% 51%;
+    --popover-foreground: 96 4% 11%;
+    --primary: 38 93% 44%;          /* #D97706 amber */
+    --primary-foreground: 43 100% 98%;
+    --secondary: 60 6% 95%;         /* #F4F4F0 surface-container-low */
+    --secondary-foreground: 17 26% 27%;
+    --muted: 60 6% 93%;             /* #EFEEEA surface-container */
+    --muted-foreground: 17 26% 27%; /* #554336 */
+    --accent: 24 52% 49%;           /* #8B5E3C warm brown */
+    --accent-foreground: 43 100% 98%;
+    --destructive: 0 72% 41%;       /* #BA1A1A */
     --destructive-foreground: 0 0% 100%;
-    --border: 35 20% 90%;
-    --input: 35 20% 90%;
-    --ring: 25 75% 47%;
-    --radius: 0.75rem;
-    --shadow-color: 180 27% 55%;
-    --chart-1: 25 75% 47%;
-    --chart-2: 142 71% 45%;
-    --chart-3: 38 92% 50%;
-    --chart-grid: 35 20% 90%;
-    --chart-text: 25 10% 46%;
+    --border: 24 22% 78%;           /* #DBC2B0 outline-variant (subtle) */
+    --input: 60 6% 93%;             /* match muted for tonal layering */
+    --ring: 38 93% 44%;
+    --radius: 0.5rem;               /* roundness-8 */
+    --shadow-color: 38 40% 30%;     /* amber-tinted shadows */
+    --chart-1: 38 93% 44%;          /* primary amber */
+    --chart-2: 94 15% 33%;          /* #5A5E4A tertiary */
+    --chart-3: 24 52% 49%;          /* #8B5E3C secondary */
+    --chart-grid: 60 6% 93%;
+    --chart-text: 17 26% 27%;
   }
 
   .dark {
-    --background: 25 20% 7%;
-    --foreground: 35 20% 92%;
-    --card: 25 18% 10%;
-    --card-foreground: 35 20% 92%;
-    --popover: 25 18% 10%;
-    --popover-foreground: 35 20% 92%;
-    --primary: 25 70% 55%;
-    --primary-foreground: 25 20% 7%;
-    --secondary: 25 15% 16%;
-    --secondary-foreground: 35 20% 92%;
-    --muted: 25 15% 16%;
-    --muted-foreground: 35 10% 55%;
-    --accent: 150 15% 16%;
-    --accent-foreground: 150 20% 90%;
+    /* Morning Calm — Dark: warmth preserved */
+    --background: 40 8% 8%;         /* warm dark, not pure black */
+    --foreground: 43 12% 90%;       /* #DBDAD6 surface-dim */
+    --card: 40 8% 12%;
+    --card-foreground: 43 12% 90%;
+    --popover: 40 8% 12%;
+    --popover-foreground: 43 12% 90%;
+    --primary: 32 100% 62%;         /* #FFB77D inverse-primary */
+    --primary-foreground: 40 8% 8%;
+    --secondary: 40 8% 16%;
+    --secondary-foreground: 43 12% 90%;
+    --muted: 40 8% 16%;
+    --muted-foreground: 43 8% 55%;
+    --accent: 24 40% 45%;
+    --accent-foreground: 43 12% 90%;
     --destructive: 0 62% 35%;
     --destructive-foreground: 0 0% 95%;
-    --border: 25 15% 16%;
-    --input: 25 15% 16%;
-    --ring: 25 70% 55%;
-    --shadow-color: 25 15% 10%;
-    --chart-1: 25 70% 55%;
-    --chart-2: 142 50% 40%;
-    --chart-3: 38 80% 55%;
-    --chart-grid: 25 15% 22%;
-    --chart-text: 35 10% 55%;
+    --border: 40 8% 20%;
+    --input: 40 8% 16%;
+    --ring: 32 100% 62%;
+    --shadow-color: 40 15% 5%;
+    --chart-1: 32 100% 62%;
+    --chart-2: 94 12% 50%;
+    --chart-3: 24 45% 55%;
+    --chart-grid: 40 8% 22%;
+    --chart-text: 43 8% 55%;
   }
 }
 

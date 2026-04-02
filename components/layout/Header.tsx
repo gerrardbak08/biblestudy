@@ -12,7 +12,7 @@ interface HeaderProps {
 
 export function Header({ title }: HeaderProps) {
   return (
-    <header className="h-14 border-b bg-card flex items-center justify-between px-4 md:px-6 shrink-0" role="banner">
+    <header className="h-14 bg-card/80 backdrop-blur-sm flex items-center justify-between px-4 md:px-6 shrink-0 shadow-[0_1px_0_hsl(var(--shadow-color)/0.06)]" role="banner">
       <h2 className="font-semibold text-sm md:text-base">{title}</h2>
       <Button
         variant="ghost"

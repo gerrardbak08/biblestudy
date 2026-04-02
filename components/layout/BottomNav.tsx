@@ -59,8 +59,8 @@ export function BottomNav({ role }: BottomNavProps) {
   const tabs = roleTabs[role] ?? leaderTabs;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t md:hidden safe-area-bottom" aria-label="모바일 메뉴">
-      <div className="flex items-center justify-around h-16">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/80 backdrop-blur-xl shadow-[0_-2px_16px_hsl(var(--shadow-color)/0.06)] md:hidden safe-area-bottom" aria-label="모바일 메뉴">
+      <div className="flex items-center justify-around h-16 px-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = pathname === tab.href ||
@@ -73,13 +73,13 @@ export function BottomNav({ role }: BottomNavProps) {
               aria-current={isActive ? "page" : undefined}
               aria-label={tab.label}
               className={cn(
-                "flex flex-col items-center justify-center gap-0.5 w-full h-full min-h-[44px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
+                "flex flex-col items-center justify-center gap-0.5 px-3 py-1.5 rounded-xl min-h-[44px] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
                 isActive
-                  ? "text-primary"
+                  ? "text-primary bg-primary/10"
                   : "text-muted-foreground"
               )}
             >
-              <Icon className="h-5 w-5" aria-hidden="true" />
+              <Icon className={cn("transition-all", isActive ? "h-6 w-6" : "h-5 w-5")} aria-hidden="true" />
               <span className="text-[11px] font-medium">{tab.label}</span>
             </Link>
           );

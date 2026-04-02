@@ -70,9 +70,9 @@ export function Sidebar({ role, userName }: SidebarProps) {
   const links = roleLinks[role] ?? leaderLinks;
 
   return (
-    <aside className="w-60 min-h-screen bg-card border-r flex flex-col shrink-0" aria-label="사이드바 메뉴">
+    <aside className="w-60 min-h-screen bg-secondary flex flex-col shrink-0" aria-label="사이드바 메뉴">
       {/* Brand + user info */}
-      <div className="p-6 border-b">
+      <div className="p-6">
         <div className="flex items-center gap-2">
           <BookOpen className="h-5 w-5 text-primary" />
           <h1 className="font-serif font-bold text-base">성경공부 관리</h1>
@@ -97,8 +97,8 @@ export function Sidebar({ role, userName }: SidebarProps) {
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  ? "bg-primary/15 text-primary font-semibold"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
               <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -109,7 +109,7 @@ export function Sidebar({ role, userName }: SidebarProps) {
       </nav>
 
       {/* Settings link */}
-      <div className="p-4 border-t">
+      <div className="p-4 mt-auto">
         <Link
           href="/settings"
           aria-current={pathname === "/settings" ? "page" : undefined}

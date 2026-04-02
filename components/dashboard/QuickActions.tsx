@@ -41,7 +41,7 @@ export function QuickActions() {
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
       {actions.map((action) => (
         <Link key={action.href} href={action.href}>
-          <div className="rounded-xl border bg-card p-5 space-y-3 transition-all hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer">
+          <div className="rounded-lg bg-card p-5 space-y-3 shadow-[0_2px_16px_hsl(var(--shadow-color)/0.06)] transition-all hover:shadow-[0_6px_24px_hsl(var(--shadow-color)/0.10)] hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer">
             <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl ${action.color}`}>
               {action.icon}
             </div>

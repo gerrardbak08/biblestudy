@@ -205,9 +205,13 @@ export function ReportForm({ learners, lessons, defaultValues, mode = "create" }
         <FieldError errors={state.errors.attended} />
       </div>
 
-      {/* Curriculum lesson selection — cascading: course → section → lesson */}
-      <div className="space-y-3 rounded-md border p-3">
-        <p className="text-sm font-medium">커리큘럼 레슨 선택</p>
+      {/* Curriculum lesson selection — collapsible */}
+      <details className="rounded-lg bg-secondary p-3 group">
+        <summary className="text-sm font-medium cursor-pointer select-none flex items-center justify-between">
+          커리큘럼 레슨 선택 (선택사항)
+          <span className="text-xs text-muted-foreground group-open:hidden">펼치기</span>
+        </summary>
+        <div className="space-y-3 mt-3">
 
         {/* Course */}
         <div className="space-y-1">
@@ -265,7 +269,8 @@ export function ReportForm({ learners, lessons, defaultValues, mode = "create" }
         )}
 
         <FieldError errors={state.errors.lessonId} />
-      </div>
+        </div>
+      </details>
 
       {/* Study content */}
       <div className="space-y-1">
@@ -297,41 +302,46 @@ export function ReportForm({ learners, lessons, defaultValues, mode = "create" }
         <FieldError errors={state.errors.progressStatus} />
       </div>
 
-      {/* Assessment levels — native selects for simplicity */}
-      <fieldset className="space-y-2">
-        <legend className="text-sm font-medium">평가 (선택)</legend>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <LevelSelect name="understandingLevel" label="이해도" defaultValue={defaultValues?.understandingLevel} />
-          <LevelSelect name="participationLevel" label="참여도" defaultValue={defaultValues?.participationLevel} />
-          <LevelSelect name="careLevel" label="돌봄 수준" defaultValue={defaultValues?.careLevel} />
+      {/* Assessment levels — collapsible */}
+      <details className="rounded-lg bg-secondary p-3 group">
+        <summary className="text-sm font-medium cursor-pointer select-none flex items-center justify-between">
+          평가 및 상세 (선택사항)
+          <span className="text-xs text-muted-foreground group-open:hidden">펼치기</span>
+        </summary>
+        <div className="space-y-3 mt-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <LevelSelect name="understandingLevel" label="이해도" defaultValue={defaultValues?.understandingLevel} />
+            <LevelSelect name="participationLevel" label="참여도" defaultValue={defaultValues?.participationLevel} />
+            <LevelSelect name="careLevel" label="돌봄 수준" defaultValue={defaultValues?.careLevel} />
+          </div>
+
+          {/* Leader's notes */}
+          <div className="space-y-1">
+            <Label htmlFor="notes">메모</Label>
+            <Textarea
+              id="notes"
+              name="notes"
+              rows={2}
+              placeholder="기도 제목, 특이사항 등"
+              defaultValue={defaultValues?.notes}
+            />
+            <FieldError errors={state.errors.notes} />
+          </div>
+
+          {/* Next session plan */}
+          <div className="space-y-1">
+            <Label htmlFor="nextPlan">다음 계획</Label>
+            <Textarea
+              id="nextPlan"
+              name="nextPlan"
+              rows={2}
+              placeholder="다음 주 학습 계획, 과제 등"
+              defaultValue={defaultValues?.nextPlan}
+            />
+            <FieldError errors={state.errors.nextPlan} />
+          </div>
         </div>
-      </fieldset>
-
-      {/* Leader's notes */}
-      <div className="space-y-1">
-        <Label htmlFor="notes">메모</Label>
-        <Textarea
-          id="notes"
-          name="notes"
-          rows={2}
-          placeholder="기도 제목, 특이사항 등"
-          defaultValue={defaultValues?.notes}
-        />
-        <FieldError errors={state.errors.notes} />
-      </div>
-
-      {/* Next session plan */}
-      <div className="space-y-1">
-        <Label htmlFor="nextPlan">다음 계획</Label>
-        <Textarea
-          id="nextPlan"
-          name="nextPlan"
-          rows={2}
-          placeholder="다음 주 학습 계획, 과제 등"
-          defaultValue={defaultValues?.nextPlan}
-        />
-        <FieldError errors={state.errors.nextPlan} />
-      </div>
+      </details>
 
       {/* Top-level server error (e.g. duplicate week) */}
       {state.message && (
