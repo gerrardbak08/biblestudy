@@ -1,38 +1,30 @@
 // components/dashboard/QuickActions.tsx
-// Large action cards for leader dashboard — quick access to common tasks
+// Clean action cards for leader dashboard
 
 import Link from "next/link";
 import { FileText, Users, BookOpen } from "lucide-react";
 
-interface QuickAction {
-  href: string;
-  label: string;
-  description: string;
-  icon: React.ReactNode;
-  color: string;
-}
-
-const actions: QuickAction[] = [
+const actions = [
   {
     href: "/leader/reports/new",
     label: "보고서 제출",
-    description: "주간 성경공부 보고서를 작성합니다",
-    icon: <FileText className="h-6 w-6" />,
-    color: "bg-primary/10 text-primary",
+    description: "주간 보고서 작성",
+    icon: FileText,
+    color: "text-primary",
   },
   {
     href: "/leader/learners",
     label: "교육생 관리",
-    description: "교육생 목록을 확인하고 관리합니다",
-    icon: <Users className="h-6 w-6" />,
-    color: "bg-accent text-accent-foreground",
+    description: "교육생 목록 확인",
+    icon: Users,
+    color: "text-emerald-600",
   },
   {
     href: "/leader/reports",
     label: "보고서 조회",
-    description: "제출한 보고서를 확인합니다",
-    icon: <BookOpen className="h-6 w-6" />,
-    color: "bg-secondary text-secondary-foreground",
+    description: "제출 내역 확인",
+    icon: BookOpen,
+    color: "text-violet-600",
   },
 ];
 
@@ -41,13 +33,11 @@ export function QuickActions() {
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
       {actions.map((action) => (
         <Link key={action.href} href={action.href}>
-          <div className="rounded-lg bg-card p-5 space-y-3 shadow-[0_2px_16px_hsl(var(--shadow-color)/0.06)] transition-all hover:shadow-[0_6px_24px_hsl(var(--shadow-color)/0.10)] hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer">
-            <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl ${action.color}`}>
-              {action.icon}
-            </div>
+          <div className="rounded-lg border bg-card p-4 space-y-2 transition-colors hover:bg-secondary/50 active:bg-secondary cursor-pointer">
+            <action.icon className={`h-5 w-5 ${action.color}`} />
             <div>
-              <h3 className="font-semibold text-sm">{action.label}</h3>
-              <p className="text-xs text-muted-foreground mt-0.5">{action.description}</p>
+              <h3 className="font-medium text-sm">{action.label}</h3>
+              <p className="text-xs text-muted-foreground">{action.description}</p>
             </div>
           </div>
         </Link>

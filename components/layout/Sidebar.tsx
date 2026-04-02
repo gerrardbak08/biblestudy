@@ -1,5 +1,5 @@
 // components/layout/Sidebar.tsx
-// Sidebar navigation — renders different links based on user role with icons
+// Linear-style sidebar — clean white bg, left border active indicator
 
 "use client";
 
@@ -12,7 +12,6 @@ import {
   Users,
   FileText,
   UserCog,
-  BookOpen,
   TrendingUp,
   Settings,
   Building2,
@@ -70,20 +69,17 @@ export function Sidebar({ role, userName }: SidebarProps) {
   const links = roleLinks[role] ?? leaderLinks;
 
   return (
-    <aside className="w-60 min-h-screen bg-secondary flex flex-col shrink-0" aria-label="사이드바 메뉴">
-      {/* Brand + user info */}
-      <div className="p-6">
-        <div className="flex items-center gap-2">
-          <BookOpen className="h-5 w-5 text-primary" />
-          <h1 className="font-serif font-bold text-base">성경공부 관리</h1>
-        </div>
-        <p className="text-xs text-muted-foreground mt-2">
+    <aside className="w-56 min-h-screen bg-background border-r flex flex-col shrink-0" aria-label="사이드바 메뉴">
+      {/* Brand */}
+      <div className="px-4 py-5 border-b">
+        <h1 className="font-semibold text-sm tracking-tight">성경공부 관리</h1>
+        <p className="text-xs text-muted-foreground mt-0.5">
           {roleLabel[role] ?? role} · {userName}
         </p>
       </div>
 
-      {/* Navigation links */}
-      <nav className="flex-1 p-4 space-y-1" aria-label="주요 메뉴">
+      {/* Navigation */}
+      <nav className="flex-1 px-2 py-3 space-y-0.5" aria-label="주요 메뉴">
         {links.map((link) => {
           const Icon = link.icon;
           const isActive = pathname === link.href ||
@@ -95,10 +91,10 @@ export function Sidebar({ role, userName }: SidebarProps) {
               href={link.href}
               aria-current={isActive ? "page" : undefined}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                "flex items-center gap-2.5 px-3 py-2 rounded-md text-[13px] font-medium transition-colors",
                 isActive
-                  ? "bg-primary/15 text-primary font-semibold"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-secondary text-foreground"
+                  : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
               )}
             >
               <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -108,16 +104,16 @@ export function Sidebar({ role, userName }: SidebarProps) {
         })}
       </nav>
 
-      {/* Settings link */}
-      <div className="p-4 mt-auto">
+      {/* Settings */}
+      <div className="px-2 py-3 border-t">
         <Link
           href="/settings"
           aria-current={pathname === "/settings" ? "page" : undefined}
           className={cn(
-            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            "flex items-center gap-2.5 px-3 py-2 rounded-md text-[13px] font-medium transition-colors",
             pathname === "/settings"
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+              ? "bg-secondary text-foreground"
+              : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
           )}
         >
           <Settings className="h-4 w-4 shrink-0" aria-hidden="true" />

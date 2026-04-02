@@ -13,8 +13,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Manrope", "var(--font-sans)", "Noto Sans KR", "system-ui", "sans-serif"],
-        serif: ["Noto Serif KR", "var(--font-serif)", "Georgia", "serif"],
+        sans: ["Inter", "var(--font-sans)", "Noto Sans KR", "system-ui", "sans-serif"],
       },
       colors: {
         background: "hsl(var(--background))",
