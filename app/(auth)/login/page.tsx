@@ -41,20 +41,25 @@ export default function LoginPage() {
       return;
     }
 
-    const res = await signIn("credentials", {
-      loginId: result.data.loginId,
-      password: result.data.password,
-      redirect: false,
-    });
+    try {
+      const res = await signIn("credentials", {
+        loginId: result.data.loginId,
+        password: result.data.password,
+        redirect: false,
+      });
 
-    if (res?.error) {
-      setAuthError("아이디 또는 비밀번호가 올바르지 않습니다.");
-      setLoading(false);
-      return;
+      if (!res || res.error) {
+        setAuthError("아이디 또는 비밀번호가 올바르지 않습니다.");
+        setLoading(false);
+        return;
+      }
+
+      // NextAuth v5: successful signIn returns { ok: true, ... }
+      window.location.href = "/";
+    } catch {
+      // NextAuth v5 may throw NEXT_REDIRECT on success — treat as success
+      window.location.href = "/";
     }
-
-    router.push("/");
-    router.refresh();
   }
 
   return (
