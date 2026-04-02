@@ -1,9 +1,9 @@
 // app/(auth)/login/page.tsx
-// Login page — Server Action based, GET redirect after success
+// Login page — Server Action handles signIn + redirect
 
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState } from "react";
 import { login } from "@/lib/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,13 +17,6 @@ const initialState: FormState = { errors: {} };
 
 export default function LoginPage() {
   const [state, formAction, isPending] = useActionState(login, initialState);
-
-  // On successful login, do a GET navigation (avoids 307 POST preservation)
-  useEffect(() => {
-    if (state.message === "SUCCESS") {
-      window.location.replace("/");
-    }
-  }, [state]);
 
   return (
     <div className="w-full max-w-sm space-y-6">
@@ -66,12 +59,12 @@ export default function LoginPage() {
               <FieldError errors={state.errors.password} />
             </div>
 
-            {state.message && state.message !== "SUCCESS" && (
+            {state.message && (
               <p className="text-sm text-destructive" role="alert">{state.message}</p>
             )}
 
-            <Button type="submit" className="w-full" disabled={isPending || state.message === "SUCCESS"}>
-              {isPending ? "로그인 중..." : state.message === "SUCCESS" ? "이동 중..." : "로그인"}
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? "로그인 중..." : "로그인"}
             </Button>
           </form>
 
