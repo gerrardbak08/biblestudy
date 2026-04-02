@@ -5,10 +5,43 @@
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { changePasswordSchema, signupSchema } from "@/lib/validations";
+import { loginSchema, changePasswordSchema, signupSchema } from "@/lib/validations";
+import { signIn } from "@/lib/auth";
+import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import type { FormState } from "@/types/form";
+
+// Server-side login — more reliable than client-side signIn on Vercel
+export async function login(
+  _prevState: FormState,
+  formData: FormData
+): Promise<FormState> {
+  const raw = {
+    loginId: formData.get("loginId"),
+    password: formData.get("password"),
+  };
+
+  const result = loginSchema.safeParse(raw);
+  if (!result.success) {
+    return { errors: result.error.flatten().fieldErrors };
+  }
+
+  try {
+    await signIn("credentials", {
+      loginId: result.data.loginId,
+      password: result.data.password,
+      redirectTo: "/",
+    });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return { errors: {}, message: "아이디 또는 비밀번호가 올바르지 않습니다." };
+    }
+    throw error; // NEXT_REDIRECT — let Next.js handle it
+  }
+
+  return { errors: {} };
+}
 
 // Sign up — creates a new LEADER account with department
 export async function signup(
