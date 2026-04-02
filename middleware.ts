@@ -1,6 +1,5 @@
 // middleware.ts
-// Lightweight middleware — uses NextAuth session token check only
-// Avoids importing Prisma/bcryptjs which bloat Edge bundle
+// Lightweight middleware — reads session token with correct cookie name
 
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
@@ -12,13 +11,22 @@ const roleHome: Record<string, string> = {
   LEADER: "/leader",
 };
 
+// NextAuth v5 uses different cookie names for HTTP vs HTTPS
+const COOKIE_NAME_SECURE = "__Secure-authjs.session-token";
+const COOKIE_NAME_DEV = "authjs.session-token";
+
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Public paths
   if (pathname === "/login" || pathname === "/signup") return NextResponse.next();
 
-  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+  const isSecure = req.nextUrl.protocol === "https:";
+  const token = await getToken({
+    req,
+    secret: process.env.AUTH_SECRET,
+    cookieName: isSecure ? COOKIE_NAME_SECURE : COOKIE_NAME_DEV,
+  });
 
   // No session → redirect to login
   if (!token) {
