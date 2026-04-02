@@ -1,70 +1,110 @@
 // app/(auth)/login/page.tsx
-// Login page — direct fetch to NextAuth callback (most reliable on Vercel)
+// Login page — native form submit to NextAuth (no fetch, most reliable)
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FieldError } from "@/components/forms/FieldError";
 import Link from "next/link";
 
-export default function LoginPage() {
-  const [error, setError] = useState("");
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
-  const [loading, setLoading] = useState(false);
+function LoginForm() {
+  const [csrfToken, setCsrfToken] = useState("");
+  const [validationError, setValidationError] = useState("");
+  const [authError, setAuthError] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    setFieldErrors({});
+  useEffect(() => {
+    // Fetch CSRF token
+    fetch("/api/auth/csrf")
+      .then((res) => res.json())
+      .then((data) => setCsrfToken(data.csrfToken))
+      .catch(() => {});
 
-    const form = new FormData(e.currentTarget);
-    const loginId = (form.get("loginId") as string)?.trim();
-    const password = form.get("password") as string;
-
-    if (!loginId) {
-      setFieldErrors({ loginId: ["아이디를 입력해주세요"] });
-      setLoading(false);
-      return;
+    // Check URL for auth error (NextAuth redirects with ?error=...)
+    if (window.location.search.includes("error")) {
+      setAuthError(true);
     }
-    if (!password) {
-      setFieldErrors({ password: ["비밀번호를 입력해주세요"] });
-      setLoading(false);
-      return;
-    }
+  }, []);
 
-    // 1. Get CSRF token
-    const csrfRes = await fetch("/api/auth/csrf");
-    const { csrfToken } = await csrfRes.json();
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    const form = formRef.current;
+    if (!form) return;
 
-    // 2. POST directly to NextAuth credentials callback
-    const res = await fetch("/api/auth/callback/credentials", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        csrfToken,
-        loginId,
-        password,
-        redirect: "false",
-      }),
-    });
+    const loginId = (form.elements.namedItem("loginId") as HTMLInputElement)?.value?.trim();
+    const password = (form.elements.namedItem("password") as HTMLInputElement)?.value;
 
-    // 3. Check result — NextAuth returns 200 with URL on success, or error
-    const url = new URL(res.url);
-    if (url.searchParams.has("error")) {
-      setError("아이디 또는 비밀번호가 올바르지 않습니다.");
-      setLoading(false);
+    if (!loginId || !password) {
+      e.preventDefault();
+      setValidationError(!loginId ? "아이디를 입력해주세요" : "비밀번호를 입력해주세요");
       return;
     }
 
-    // 4. Success — navigate to home
-    window.location.href = "/";
+    setValidationError("");
+    // Let form submit natively — browser handles 302 + cookie setting
   }
 
+  return (
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle className="text-center text-base">로그인</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form
+          ref={formRef}
+          method="POST"
+          action="/api/auth/callback/credentials"
+          onSubmit={handleSubmit}
+          className="space-y-4"
+        >
+          <input type="hidden" name="csrfToken" value={csrfToken} />
+          <input type="hidden" name="callbackUrl" value="/" />
+
+          <div className="space-y-1">
+            <Label htmlFor="loginId">아이디</Label>
+            <Input
+              id="loginId"
+              name="loginId"
+              type="text"
+              placeholder="아이디 입력"
+              autoComplete="username"
+            />
+          </div>
+
+          <div className="space-y-1">
+            <Label htmlFor="password">비밀번호</Label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+            />
+          </div>
+
+          {(authError || validationError) && (
+            <p className="text-sm text-destructive" role="alert">
+              {validationError || "아이디 또는 비밀번호가 올바르지 않습니다."}
+            </p>
+          )}
+
+          <Button type="submit" className="w-full" disabled={!csrfToken}>
+            {!csrfToken ? "준비 중..." : "로그인"}
+          </Button>
+        </form>
+
+        <div className="mt-4 text-center">
+          <Link href="/signup" className="text-sm text-muted-foreground hover:text-foreground">
+            계정이 없으신가요? <span className="text-primary font-medium">회원가입</span>
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default function LoginPage() {
   return (
     <div className="w-full max-w-sm space-y-6">
       <div className="text-center space-y-2">
@@ -77,51 +117,9 @@ export default function LoginPage() {
         <p className="text-sm text-muted-foreground">교회 성경공부 진행 현황 관리 플랫폼</p>
       </div>
 
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle className="text-center text-base">로그인</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-1">
-              <Label htmlFor="loginId">아이디</Label>
-              <Input
-                id="loginId"
-                name="loginId"
-                type="text"
-                placeholder="아이디 입력"
-                autoComplete="username"
-              />
-              <FieldError errors={fieldErrors.loginId} />
-            </div>
-
-            <div className="space-y-1">
-              <Label htmlFor="password">비밀번호</Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-              />
-              <FieldError errors={fieldErrors.password} />
-            </div>
-
-            {error && (
-              <p className="text-sm text-destructive" role="alert">{error}</p>
-            )}
-
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "로그인 중..." : "로그인"}
-            </Button>
-          </form>
-
-          <div className="mt-4 text-center">
-            <Link href="/signup" className="text-sm text-muted-foreground hover:text-foreground">
-              계정이 없으신가요? <span className="text-primary font-medium">회원가입</span>
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+      <Suspense>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 }
