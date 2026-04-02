@@ -20,7 +20,13 @@ export async function getAdminDashboardData() {
       getDeptComparisonData(),
     ]);
 
-  return { totalLeaders, totalLearners, totalReports, progress, weeklyData, deptData };
+  const [monthlyData, courseStats, missingLeaders] = await Promise.all([
+    getMonthlyReportData(),
+    getCourseProgressStats(),
+    getMissingReportLeaders(),
+  ]);
+
+  return { totalLeaders, totalLearners, totalReports, progress, weeklyData, monthlyData, deptData, courseStats, missingLeaders };
 }
 
 /** Weekly report counts for bar chart */
@@ -63,6 +69,104 @@ async function getDeptComparisonData() {
     learners: dept.users.reduce((s, u) => s + u._count.learners, 0),
     reports: dept.users.reduce((s, u) => s + u._count.reports, 0),
   }));
+}
+
+/** Monthly report counts for trend chart (last 12 months) */
+async function getMonthlyReportData() {
+  const twelveMonthsAgo = new Date();
+  twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
+
+  const reports = await prisma.studyReport.findMany({
+    where: { weekDate: { gte: twelveMonthsAgo } },
+    select: { weekDate: true },
+    orderBy: { weekDate: "asc" },
+  });
+
+  const monthMap = new Map<string, number>();
+  for (const r of reports) {
+    const month = r.weekDate.toISOString().slice(0, 7); // YYYY-MM
+    monthMap.set(month, (monthMap.get(month) ?? 0) + 1);
+  }
+
+  return Array.from(monthMap.entries()).map(([month, count]) => ({
+    month: month.slice(2), // YY-MM
+    count,
+  }));
+}
+
+/** Course-level progress stats — basic vs advanced */
+async function getCourseProgressStats() {
+  const courses = await prisma.course.findMany({
+    select: {
+      id: true,
+      name: true,
+      level: true,
+      sections: {
+        select: {
+          lessons: {
+            select: {
+              id: true,
+              _count: { select: { reports: true } },
+            },
+          },
+        },
+      },
+    },
+    orderBy: { order: "asc" },
+  });
+
+  return courses.map((course) => {
+    const totalLessons = course.sections.reduce((s, sec) => s + sec.lessons.length, 0);
+    const lessonsWithReports = course.sections.reduce(
+      (s, sec) => s + sec.lessons.filter((l) => l._count.reports > 0).length,
+      0
+    );
+    const totalReports = course.sections.reduce(
+      (s, sec) => s + sec.lessons.reduce((ls, l) => ls + l._count.reports, 0),
+      0
+    );
+
+    return {
+      name: course.name,
+      level: course.level,
+      totalLessons,
+      lessonsWithReports,
+      totalReports,
+      completionRate: totalLessons > 0 ? Math.round((lessonsWithReports / totalLessons) * 100) : 0,
+    };
+  });
+}
+
+/** Leaders who haven't submitted reports this week */
+async function getMissingReportLeaders() {
+  const now = new Date();
+  const day = now.getDay();
+  const diff = day === 0 ? -6 : 1 - day;
+  const weekStart = new Date(now);
+  weekStart.setDate(now.getDate() + diff);
+  weekStart.setHours(0, 0, 0, 0);
+
+  const leaders = await prisma.user.findMany({
+    where: { role: "LEADER" },
+    select: {
+      id: true,
+      name: true,
+      department: { select: { name: true } },
+      _count: { select: { learners: true } },
+      reports: {
+        where: { weekDate: { gte: weekStart } },
+        select: { id: true },
+      },
+    },
+  });
+
+  return leaders
+    .filter((l) => l._count.learners > 0 && l.reports.length === 0)
+    .map((l) => ({
+      name: l.name,
+      department: l.department?.name ?? "-",
+      learnerCount: l._count.learners,
+    }));
 }
 
 /** Admin leaders list with counts */
