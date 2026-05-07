@@ -31,7 +31,7 @@
 - Next.js App Router
 - TypeScript
 - Prisma
-- PostgreSQL/Supabase
+- PostgreSQL
 - NextAuth Credentials
 - Tailwind CSS
 - shadcn 스타일 UI 컴포넌트

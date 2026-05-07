@@ -1,6 +1,6 @@
 # URL 배포 가이드
 
-이 앱은 Next.js App Router, Prisma, PostgreSQL/Supabase, Auth.js 기반의 풀스택 앱이다. 정적 사이트 배포가 아니라 Node.js 서버 실행을 지원하는 플랫폼을 사용해야 한다.
+이 앱은 Next.js App Router, Prisma, PostgreSQL, Auth.js 기반의 풀스택 앱이다. 정적 사이트 배포가 아니라 Node.js 서버 실행과 PostgreSQL 연결을 지원하는 플랫폼을 사용해야 한다.
 
 ## 추천 배포처
 
@@ -42,9 +42,6 @@ Render도 가능하다. Web Service로 배포하고 `*.onrender.com` URL을 받�
 
 ```text
 DATABASE_URL
-DIRECT_URL
-NEXT_PUBLIC_SUPABASE_URL
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY
 AUTH_SECRET
 ```
 
@@ -54,6 +51,7 @@ AUTH_SECRET
 - `NEXTAUTH_URL=http://localhost:3000`은 배포 환경에 넣지 않는다.
 - 꼭 URL 변수를 넣어야 한다면 실제 배포 URL로 설정한다.
 - 현재 `lib/auth.ts`에는 `trustHost: true`가 설정되어 있어, 일반적인 Railway/Render 배포에서는 요청 host를 신뢰하도록 동작한다.
+- 별도 공개 클라이언트 DB 키나 URL은 사용하지 않는다.
 
 ## DB 스키마
 
@@ -61,8 +59,8 @@ AUTH_SECRET
 
 현재 프로젝트에는 Prisma migrations 폴더가 없으므로, 초기 배포 전에는 아래 중 하나를 선택한다.
 
-1. Supabase SQL Editor에서 필요한 SQL을 적용한다.
-2. 로컬에서 운영 DB 환경변수를 바라보게 한 뒤 `npx prisma db push`를 실행한다.
+1. 배포 플랫폼에서 PostgreSQL 데이터베이스를 만든다.
+2. 로컬 또는 배포 쉘에서 운영 DB의 `DATABASE_URL`을 바라보게 한 뒤 `npx prisma db push`를 실행한다.
 
 운영 DB가 비어 있다면 seed를 실행해 기본 부서/과정/테스트 계정을 넣을 수 있다.
 
@@ -88,4 +86,3 @@ npx prisma db seed
 - Render Next.js: https://render.com/docs/deploy-nextjs-app
 - Auth.js Deployment: https://authjs.dev/getting-started/deployment
 - Next.js Environment Variables: https://nextjs.org/docs/app/guides/environment-variables
-

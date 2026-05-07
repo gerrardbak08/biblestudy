@@ -195,7 +195,7 @@
 
 ### 9.1 Project Level
 
-현재 프로젝트: **Dynamic** (Next.js App Router + Supabase/Prisma, Server Actions 패턴)
+현재 프로젝트: **Dynamic** (Next.js App Router + Prisma/PostgreSQL, Server Actions 패턴)
 
 ### 9.2 변경 범위
 

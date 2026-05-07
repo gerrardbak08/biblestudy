@@ -8,7 +8,7 @@
 ## [2026-04-01] — PDCA Cycle Completion v1.0
 
 ### Added
-- **Core Platform**: Next.js 15 (App Router) + TypeScript + Prisma + PostgreSQL (Supabase)
+- **Core Platform**: Next.js 15 (App Router) + TypeScript + Prisma + PostgreSQL
 - **3-Tier Role System**: Admin / DeptHead / Leader (미리 설계됨, 기능 구현 완료)
 - **Data Models**: User, Learner, StudyReport, Department, Course, Section, Lesson (6 models)
 - **Server Actions**: 20+ functions (CRUD for Learner, StudyReport, Leader + Auth + Password)
@@ -89,7 +89,7 @@
 - Unit tests (Server Actions, queries)
 - E2E tests (full workflows)
 - Performance optimization
-- Production deployment (Supabase + Vercel)
+- Production deployment (PostgreSQL + Node 지원 플랫폼)
 - Expected: 2026-05-01
 
 ---
@@ -121,7 +121,7 @@
 - **Auth**: NextAuth.js v5 beta
 - **Password**: bcryptjs 2.4
 - **ORM**: Prisma 6.5
-- **Database**: PostgreSQL via Supabase
+- **Database**: PostgreSQL
 - **Validation**: Zod 4.3
 
 ### DevTools
