@@ -14,11 +14,11 @@ export default async function NewLeaderPage() {
 
   return (
     <>
-      <Header title="리더 추가" />
+      <Header title="보조 리더 등록" subtitle="일반 운영은 리더 자가 가입을 사용합니다" />
       <div className="p-6 max-w-md">
         <Card>
           <CardHeader>
-            <CardTitle>새 리더 계정 생성</CardTitle>
+            <CardTitle>관리자 보조 등록</CardTitle>
           </CardHeader>
           <CardContent>
             <CreateLeaderForm departments={departments} />

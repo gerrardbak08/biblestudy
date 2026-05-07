@@ -40,7 +40,7 @@ const adminGroups: NavGroup[] = [
   {
     title: "관리",
     links: [
-      { href: "/admin/leaders", label: "리더 관리", icon: UserCog },
+      { href: "/admin/leaders", label: "리더 현황", icon: UserCog },
       { href: "/admin/departments", label: "부서 관리", icon: Building2 },
       { href: "/admin/curriculum", label: "커리큘럼", icon: GraduationCap },
     ],
@@ -120,16 +120,16 @@ export function Sidebar({ role, userName }: SidebarProps) {
     >
       {/* Brand */}
       <div className="px-5 py-5">
-        <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center" aria-hidden="true">
-            <span className="text-white text-xs font-bold">SG</span>
-          </div>
-          <div>
-            <h1 className="font-semibold text-[13px] tracking-tight">성경공부 관리</h1>
-            <p className="text-[11px] text-muted-foreground">
-              {roleLabel[role] ?? role} · {userName}
-            </p>
-          </div>
+        <div>
+          <h1 className="font-semibold text-[13px] leading-snug break-keep">
+            사랑과평안의교회
+          </h1>
+          <p className="text-[11px] font-medium text-primary leading-snug">
+            성경공부 관리현황
+          </p>
+          <p className="text-[11px] text-muted-foreground mt-1">
+            {roleLabel[role] ?? role} · {userName}
+          </p>
         </div>
       </div>
 

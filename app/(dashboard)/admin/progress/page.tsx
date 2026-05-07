@@ -45,7 +45,10 @@ export default async function AdminProgressPage() {
               <TableHeader>
                 <TableRow className="bg-muted/30">
                   <TableHead>부서</TableHead>
-                  <TableHead>인원</TableHead>
+                  <TableHead>
+                    <div>등록 계정</div>
+                    <div className="text-[11px] font-normal text-muted-foreground">리더/부서장</div>
+                  </TableHead>
                   <TableHead>교육생</TableHead>
                   <TableHead className="w-48">평균 진도</TableHead>
                 </TableRow>
@@ -54,7 +57,7 @@ export default async function AdminProgressPage() {
                 {deptStats.map((dept) => (
                   <TableRow key={dept.id}>
                     <TableCell className="font-medium">{dept.name}</TableCell>
-                    <TableCell>{dept.memberCount}</TableCell>
+                    <TableCell>{dept.accountCount}</TableCell>
                     <TableCell>{dept.learnerCount}</TableCell>
                     <TableCell>
                       <ProgressBar percentage={dept.avgPercentage} size="md" />

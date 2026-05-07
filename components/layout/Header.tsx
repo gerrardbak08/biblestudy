@@ -15,15 +15,15 @@ interface HeaderProps {
 export function Header({ title, subtitle }: HeaderProps) {
   return (
     <header
-      className="h-14 border-b border-border/50 bg-card flex items-center justify-between px-5 md:px-8 shrink-0"
+      className="h-14 border-b border-border/50 bg-card flex items-center justify-between gap-3 px-4 md:px-8 shrink-0"
       role="banner"
     >
       <div className="flex items-center gap-2 min-w-0">
         <h2 className="font-semibold text-base tracking-tight truncate">{title}</h2>
         {subtitle && (
           <>
-            <span className="text-muted-foreground/40" aria-hidden="true">/</span>
-            <span className="text-sm text-muted-foreground truncate">{subtitle}</span>
+            <span className="hidden min-[380px]:inline text-muted-foreground/40" aria-hidden="true">/</span>
+            <span className="hidden min-[380px]:inline text-sm text-muted-foreground truncate">{subtitle}</span>
           </>
         )}
       </div>

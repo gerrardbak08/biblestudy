@@ -12,9 +12,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { FieldError } from "@/components/forms/FieldError";
+import { LEARNER_INSTITUTION_OPTIONS } from "@/lib/constants";
 import type { FormState } from "@/types/form";
 
 const initialState: FormState = { errors: {} };
+const selectClassName =
+  "h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 export function LearnerForm() {
   const [state, formAction, isPending] = useActionState(
@@ -32,6 +35,24 @@ export function LearnerForm() {
         <Label htmlFor="name">이름 *</Label>
         <Input id="name" name="name" placeholder="홍길동" />
         <FieldError errors={state.errors.name} />
+      </div>
+
+      <div className="space-y-1">
+        <Label htmlFor="institution">기관 *</Label>
+        <select
+          id="institution"
+          name="institution"
+          defaultValue=""
+          className={selectClassName}
+        >
+          <option value="" disabled>기관 선택</option>
+          {LEARNER_INSTITUTION_OPTIONS.map((institution) => (
+            <option key={institution} value={institution}>
+              {institution}
+            </option>
+          ))}
+        </select>
+        <FieldError errors={state.errors.institution} />
       </div>
 
       <div className="space-y-1">

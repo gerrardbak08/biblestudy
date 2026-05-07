@@ -56,6 +56,7 @@ model User {
 model Learner {
   id        String   @id @default(cuid())
   name      String
+  institution String? // learner's church department or external status
   phone     String?
   notes     String?  // optional notes about the learner
   leaderId  String

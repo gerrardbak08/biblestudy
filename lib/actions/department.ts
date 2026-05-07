@@ -71,12 +71,12 @@ export async function deleteDepartment(id: string): Promise<void> {
   const parsed = idSchema.safeParse(id);
   if (!parsed.success) redirect("/admin/departments");
 
-  // Check if department has members
-  const memberCount = await prisma.user.count({
+  // Do not delete departments that still have linked login accounts.
+  const accountCount = await prisma.user.count({
     where: { departmentId: parsed.data },
   });
-  if (memberCount > 0) {
-    // Cannot delete — has members. Redirect back (action doesn't support returning errors for non-form actions)
+  if (accountCount > 0) {
+    // Cannot delete — has linked accounts. Redirect back.
     redirect("/admin/departments");
   }
 

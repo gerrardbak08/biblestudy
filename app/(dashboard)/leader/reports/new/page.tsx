@@ -6,13 +6,32 @@ import { redirect } from "next/navigation";
 import { Header } from "@/components/layout/Header";
 import { ReportForm } from "@/components/forms/ReportForm";
 import { getReportFormData } from "@/lib/queries/leader";
+import { toDateInputValue } from "@/lib/dates";
 import Link from "next/link";
 
-export default async function NewReportPage() {
+export default async function NewReportPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ learnerId?: string }>;
+}) {
   const session = await auth();
   if (!session) redirect("/login");
 
   const { learners, lessons } = await getReportFormData(session.user.id);
+  const params = searchParams ? await searchParams : {};
+  const requestedLearnerId = params.learnerId;
+  const selectedLearnerId = learners.some((learner) => learner.id === requestedLearnerId)
+    ? requestedLearnerId
+    : learners.length === 1
+      ? learners[0].id
+      : undefined;
+
+  const defaultValues = {
+    learnerId: selectedLearnerId,
+    weekDate: toDateInputValue(),
+    attended: "true",
+    progressStatus: "진행중",
+  };
 
   if (learners.length === 0) {
     return (
@@ -44,7 +63,7 @@ export default async function NewReportPage() {
           <h3 className="section-title">주간 보고서 작성</h3>
         </div>
         <div className="bento-card">
-          <ReportForm learners={learners} lessons={lessons} />
+          <ReportForm learners={learners} lessons={lessons} defaultValues={defaultValues} />
         </div>
       </div>
     </>

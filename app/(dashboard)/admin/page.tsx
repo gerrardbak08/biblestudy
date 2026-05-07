@@ -27,11 +27,11 @@ export default async function AdminDashboardPage() {
   return (
     <>
       <Header title="대시보드" subtitle="종합 현황" />
-      <div className="p-4 md:p-8 max-w-[1400px] space-y-0">
+      <div className="w-full max-w-[1400px] px-4 py-5 md:p-8 space-y-0">
 
         {/* ── Hero headline ── designbase/tenet: 5초 안에 핵심 가치 전달 */}
-        <section className="mb-8 animate-fade-up" aria-labelledby="hero-title">
-          <h2 id="hero-title" className="text-2xl md:text-3xl font-bold tracking-tight">
+        <section className="mb-7 md:mb-8 animate-fade-up" aria-labelledby="hero-title">
+          <h2 id="hero-title" className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight leading-tight">
             성경공부 교육 현황을
             <br className="sm:hidden" />
             <span className="text-primary"> 한눈에</span> 파악하세요
@@ -49,7 +49,7 @@ export default async function AdminDashboardPage() {
         )}
 
         {/* ── Section 1: KPI ── */}
-        <section className="mb-8" aria-labelledby="section-kpi">
+        <section className="mb-0" aria-labelledby="section-kpi">
           <div className="section-header animate-fade-up" style={{ animationDelay: "100ms" }}>
             <span className="section-number" aria-hidden="true">1</span>
             <div>
@@ -57,7 +57,7 @@ export default async function AdminDashboardPage() {
               <p className="section-desc">전체 교육 현황 요약</p>
             </div>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 stagger-children">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 stagger-children">
             <StatCard label="진행자" value={totalLeaders} icon={Users} iconColor="text-blue-600" />
             <StatCard label="교육생" value={totalLearners} icon={GraduationCap} iconColor="text-emerald-600" />
             <StatCard label="보고서" value={totalReports} icon={FileText} iconColor="text-amber-600" />
@@ -65,10 +65,10 @@ export default async function AdminDashboardPage() {
           </div>
         </section>
 
-        <div className="section-divider" />
+        <div className="section-divider !my-5 md:!my-6" />
 
         {/* ── Section 2: 인도자별 교육 현황 (Hero content) ── */}
-        <section className="mb-8" aria-labelledby="section-matrix">
+        <section className="mb-0" aria-labelledby="section-matrix">
           <div className="section-header animate-fade-up">
             <span className="section-number" aria-hidden="true">2</span>
             <div>
@@ -79,10 +79,10 @@ export default async function AdminDashboardPage() {
           <ProgressMatrix matrix={matrix} courseInfo={courseInfo} />
         </section>
 
-        <div className="section-divider" />
+        <div className="section-divider !my-5 md:!my-6" />
 
         {/* ── Section 3: 과정별 진행 ── */}
-        <section className="mb-8" aria-labelledby="section-courses">
+        <section className="mb-0" aria-labelledby="section-courses">
           <div className="section-header animate-fade-up">
             <span className="section-number" aria-hidden="true">3</span>
             <div>
@@ -93,10 +93,10 @@ export default async function AdminDashboardPage() {
           <CourseProgressCards courses={courseStats} />
         </section>
 
-        <div className="section-divider" />
+        <div className="section-divider !my-5 md:!my-6" />
 
         {/* ── Section 4: 추이 분석 ── */}
-        <section className="mb-8" aria-labelledby="section-trends">
+        <section className="mb-0" aria-labelledby="section-trends">
           <div className="section-header animate-fade-up">
             <span className="section-number" aria-hidden="true">4</span>
             <div>
@@ -105,18 +105,18 @@ export default async function AdminDashboardPage() {
             </div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="bento-card">
+            <div className="bento-card !p-4 sm:!p-5">
               <h4 className="text-sm font-semibold mb-4">주간 보고서 제출</h4>
               <WeeklyReportChart data={weeklyData} />
             </div>
-            <div className="bento-card">
+            <div className="bento-card !p-4 sm:!p-5">
               <h4 className="text-sm font-semibold mb-4">월별 추이 (12개월)</h4>
               <MonthlyTrendChart data={monthlyData} />
             </div>
           </div>
         </section>
 
-        <div className="section-divider" />
+        <div className="section-divider !my-5 md:!my-6" />
 
         {/* ── Section 5: 부서별 현황 ── */}
         <section className="mb-8" aria-labelledby="section-dept">
@@ -127,7 +127,7 @@ export default async function AdminDashboardPage() {
               <p className="section-desc">부서 간 진행자·교육생·보고서 비교</p>
             </div>
           </div>
-          <div className="bento-card">
+          <div className="bento-card !p-4 sm:!p-5">
             <DeptComparisonChart data={deptData} />
           </div>
         </section>

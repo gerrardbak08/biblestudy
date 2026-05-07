@@ -13,11 +13,11 @@ interface StatCardProps {
 
 export function StatCard({ label, value, icon: Icon, iconColor, trend }: StatCardProps) {
   return (
-    <div className="bento-card group relative overflow-hidden">
+    <div className="bento-card group relative overflow-hidden !p-4 sm:!p-5">
       {/* Background watermark icon */}
       {Icon && (
         <Icon
-          className={`absolute -right-2 -top-2 h-16 w-16 opacity-[0.06] ${iconColor ?? "text-muted-foreground"}`}
+          className={`absolute -right-2 -top-2 h-14 w-14 opacity-[0.06] sm:h-16 sm:w-16 ${iconColor ?? "text-muted-foreground"}`}
           aria-hidden="true"
         />
       )}

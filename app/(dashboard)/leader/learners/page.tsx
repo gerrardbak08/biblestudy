@@ -49,6 +49,7 @@ export default async function LeaderLearnersPage() {
               <TableHeader>
                 <TableRow className="bg-muted/30">
                   <TableHead>이름</TableHead>
+                  <TableHead>기관</TableHead>
                   <TableHead>연락처</TableHead>
                   <TableHead>보고서</TableHead>
                   <TableHead className="w-20"></TableHead>
@@ -58,6 +59,7 @@ export default async function LeaderLearnersPage() {
                 {learners.map((learner) => (
                   <TableRow key={learner.id}>
                     <TableCell className="font-medium">{learner.name}</TableCell>
+                    <TableCell>{learner.institution ?? "-"}</TableCell>
                     <TableCell className="text-muted-foreground">{learner.phone ?? "-"}</TableCell>
                     <TableCell>{learner._count.reports}</TableCell>
                     <TableCell>

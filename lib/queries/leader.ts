@@ -3,15 +3,11 @@
 
 import { prisma } from "@/lib/prisma";
 import { PAGE_SIZE } from "@/lib/constants";
+import { getCurrentWeekStart } from "@/lib/dates";
 
 /** Leader dashboard data — learners with weekly submission status */
 export async function getLeaderDashboard(leaderId: string) {
-  const now = new Date();
-  const day = now.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  const weekStart = new Date(now);
-  weekStart.setDate(now.getDate() + diff);
-  weekStart.setHours(0, 0, 0, 0);
+  const weekStart = getCurrentWeekStart();
 
   const [learners, thisWeekReports, totalReports] = await Promise.all([
     prisma.learner.findMany({
@@ -52,6 +48,7 @@ export async function getLearnerById(id: string) {
     select: {
       id: true,
       name: true,
+      institution: true,
       phone: true,
       notes: true,
       leaderId: true,
@@ -82,8 +79,21 @@ export async function getLeaderReportDetail(id: string) {
   return prisma.studyReport.findUnique({
     where: { id },
     include: {
-      learner: { select: { name: true, phone: true } },
+      learner: { select: { name: true, institution: true, phone: true } },
       leader: { select: { name: true } },
+      lesson: {
+        select: {
+          code: true,
+          name: true,
+          section: {
+            select: {
+              code: true,
+              name: true,
+              course: { select: { name: true, level: true } },
+            },
+          },
+        },
+      },
     },
   });
 }

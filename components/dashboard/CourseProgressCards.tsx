@@ -17,9 +17,9 @@ export function CourseProgressCards({ courses }: { courses: CourseStats[] }) {
   if (courses.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
       {courses.map((course) => (
-        <div key={course.name} className="bento-card">
+        <div key={course.name} className="bento-card !p-4 sm:!p-5">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-2.5">
               <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">

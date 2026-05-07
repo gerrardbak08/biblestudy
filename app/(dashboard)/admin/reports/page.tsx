@@ -43,7 +43,7 @@ export default async function AdminReportsPage({
     { key: "progressStatus", label: "진행상태" },
     { key: "understandingLevel", label: "이해도" },
     { key: "participationLevel", label: "참여도" },
-    { key: "careLevel", label: "돌봄도" },
+    { key: "careLevel", label: "후속 돌봄 필요도" },
   ];
 
   return (

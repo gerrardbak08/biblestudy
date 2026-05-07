@@ -4,13 +4,15 @@
 import { prisma } from "@/lib/prisma";
 import { getProgressStats } from "@/lib/progress";
 import { CHART_WEEKS, PAGE_SIZE } from "@/lib/constants";
+import { getCurrentWeekStart } from "@/lib/dates";
 
 /** Admin dashboard stats */
 export async function getAdminDashboardData() {
   const eightWeeksAgo = new Date();
   eightWeeksAgo.setDate(eightWeeksAgo.getDate() - CHART_WEEKS * 7);
 
-  const [totalLeaders, totalLearners, totalReports, progress, weeklyData, deptData] =
+  const [totalLeaders, totalLearners, totalReports, progress, weeklyData, deptData,
+         monthlyData, courseStats, missingLeaders] =
     await Promise.all([
       prisma.user.count({ where: { role: "LEADER" } }),
       prisma.learner.count(),
@@ -18,13 +20,10 @@ export async function getAdminDashboardData() {
       getProgressStats(),
       getWeeklyReportData(eightWeeksAgo),
       getDeptComparisonData(),
+      getMonthlyReportData(),
+      getCourseProgressStats(),
+      getMissingReportLeaders(),
     ]);
-
-  const [monthlyData, courseStats, missingLeaders] = await Promise.all([
-    getMonthlyReportData(),
-    getCourseProgressStats(),
-    getMissingReportLeaders(),
-  ]);
 
   return { totalLeaders, totalLearners, totalReports, progress, weeklyData, monthlyData, deptData, courseStats, missingLeaders };
 }
@@ -139,12 +138,7 @@ async function getCourseProgressStats() {
 
 /** Leaders who haven't submitted reports this week */
 async function getMissingReportLeaders() {
-  const now = new Date();
-  const day = now.getDay();
-  const diff = day === 0 ? -6 : 1 - day;
-  const weekStart = new Date(now);
-  weekStart.setDate(now.getDate() + diff);
-  weekStart.setHours(0, 0, 0, 0);
+  const weekStart = getCurrentWeekStart();
 
   const leaders = await prisma.user.findMany({
     where: { role: "LEADER" },
@@ -292,9 +286,22 @@ export async function getReportDetail(id: string) {
   return prisma.studyReport.findUnique({
     where: { id },
     include: {
-      learner: { select: { name: true, phone: true } },
+      learner: { select: { name: true, institution: true, phone: true } },
       leader: {
         select: { name: true, loginId: true, department: { select: { name: true } } },
+      },
+      lesson: {
+        select: {
+          code: true,
+          name: true,
+          section: {
+            select: {
+              code: true,
+              name: true,
+              course: { select: { name: true, level: true } },
+            },
+          },
+        },
       },
     },
   });
@@ -320,7 +327,7 @@ export async function getAdminProgressData() {
       return {
         id: dept.id,
         name: dept.name,
-        memberCount: dept._count.users,
+        accountCount: dept._count.users,
         learnerCount: stats.learnerProgress.length,
         avgPercentage: stats.avgPercentage,
       };

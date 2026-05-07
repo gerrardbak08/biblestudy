@@ -13,38 +13,39 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import type { FormState } from "@/types/form";
+
+const selectClassName =
+  "h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 // Simple 1–5 level select using a native <select> — keeps the implementation lean
 function LevelSelect({
   name,
   label,
   defaultValue,
+  helperText,
 }: {
   name: string;
   label: string;
   defaultValue?: number | null;
+  helperText?: string;
 }) {
   return (
     <div className="space-y-1">
       <Label htmlFor={name}>{label}</Label>
+      {helperText && (
+        <p className="text-[11px] leading-snug text-muted-foreground">{helperText}</p>
+      )}
       <select
         id={name}
         name={name}
         defaultValue={defaultValue ?? ""}
-        className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className={selectClassName}
       >
         <option value="">선택 안 함</option>
         {[1, 2, 3, 4, 5].map((n) => (
           <option key={n} value={n}>
-            {n} / 5
+            {n}점
           </option>
         ))}
       </select>
@@ -98,11 +99,6 @@ export function ReportForm({ learners, lessons, defaultValues, mode = "create" }
     if (state.message) toast.error(state.message);
   }, [state]);
 
-  // Controlled values for shadcn Select (they don't emit to native formData)
-  const [learnerId, setLearnerId] = useState(defaultValues?.learnerId ?? "");
-  const [attended, setAttended] = useState(defaultValues?.attended ?? "");
-  const [progressStatus, setProgressStatus] = useState(defaultValues?.progressStatus ?? "");
-
   // Derive initial course/section from defaultValues lessonId
   const defaultLesson = defaultValues?.lessonId
     ? lessons.find((l) => l.id === defaultValues.lessonId)
@@ -154,32 +150,37 @@ export function ReportForm({ learners, lessons, defaultValues, mode = "create" }
     setSelectedLessonId("");
   }
 
+  const showLessonFields = mode === "edit" && Boolean(defaultValues?.lessonId);
+  const showDetailFields = mode === "edit" && Boolean(
+    defaultValues?.understandingLevel ||
+    defaultValues?.participationLevel ||
+    defaultValues?.careLevel ||
+    defaultValues?.notes ||
+    defaultValues?.nextPlan
+  );
+
   return (
     <form action={formAction} className="space-y-4">
-      {/* Hidden inputs carry shadcn Select values into FormData */}
       {mode === "edit" && defaultValues?.id && (
         <input type="hidden" name="id" value={defaultValues.id} />
       )}
-      <input type="hidden" name="learnerId" value={learnerId} />
-      <input type="hidden" name="attended" value={attended} />
-      <input type="hidden" name="progressStatus" value={progressStatus} />
-      <input type="hidden" name="lessonId" value={selectedLessonId} />
 
       {/* Learner */}
       <div className="space-y-1">
-        <Label>교육생 *</Label>
-        <Select onValueChange={setLearnerId}>
-          <SelectTrigger>
-            <SelectValue placeholder="교육생 선택" />
-          </SelectTrigger>
-          <SelectContent>
-            {learners.map((l) => (
-              <SelectItem key={l.id} value={l.id}>
-                {l.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <Label htmlFor="learnerId">교육생 *</Label>
+        <select
+          id="learnerId"
+          name="learnerId"
+          defaultValue={defaultValues?.learnerId ?? ""}
+          className={selectClassName}
+        >
+          <option value="" disabled>교육생 선택</option>
+          {learners.map((l) => (
+            <option key={l.id} value={l.id}>
+              {l.name}
+            </option>
+          ))}
+        </select>
         <FieldError errors={state.errors.learnerId} />
       </div>
 
@@ -192,21 +193,22 @@ export function ReportForm({ learners, lessons, defaultValues, mode = "create" }
 
       {/* Attendance */}
       <div className="space-y-1">
-        <Label>출석 여부 *</Label>
-        <Select onValueChange={setAttended}>
-          <SelectTrigger>
-            <SelectValue placeholder="선택" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="true">출석</SelectItem>
-            <SelectItem value="false">결석</SelectItem>
-          </SelectContent>
-        </Select>
+        <Label htmlFor="attended">출석 여부 *</Label>
+        <select
+          id="attended"
+          name="attended"
+          defaultValue={defaultValues?.attended ?? ""}
+          className={selectClassName}
+        >
+          <option value="" disabled>선택</option>
+          <option value="true">출석</option>
+          <option value="false">결석</option>
+        </select>
         <FieldError errors={state.errors.attended} />
       </div>
 
       {/* Curriculum lesson selection — collapsible */}
-      <details className="rounded-lg bg-secondary p-3 group">
+      <details className="rounded-lg bg-secondary p-3 group" open={showLessonFields}>
         <summary className="text-sm font-medium cursor-pointer select-none flex items-center justify-between">
           커리큘럼 레슨 선택 (선택사항)
           <span className="text-xs text-muted-foreground group-open:hidden">펼치기</span>
@@ -215,56 +217,60 @@ export function ReportForm({ learners, lessons, defaultValues, mode = "create" }
 
         {/* Course */}
         <div className="space-y-1">
-          <Label>과정</Label>
-          <Select onValueChange={handleCourseChange}>
-            <SelectTrigger>
-              <SelectValue placeholder="과정 선택" />
-            </SelectTrigger>
-            <SelectContent>
-              {courses.map((c) => (
-                <SelectItem key={c.name} value={c.name}>
-                  [{c.level}] {c.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Label htmlFor="courseSelect">과정</Label>
+          <select
+            id="courseSelect"
+            value={selectedCourse}
+            onChange={(event) => handleCourseChange(event.target.value)}
+            className={selectClassName}
+          >
+            <option value="">과정 선택</option>
+            {courses.map((c) => (
+              <option key={c.name} value={c.name}>
+                [{c.level}] {c.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Section */}
         {sections.length > 0 && (
           <div className="space-y-1">
-            <Label>단원</Label>
-            <Select onValueChange={handleSectionChange} value={selectedSection}>
-              <SelectTrigger>
-                <SelectValue placeholder="단원 선택" />
-              </SelectTrigger>
-              <SelectContent>
-                {sections.map((s) => (
-                  <SelectItem key={s.code} value={s.code}>
-                    {s.code}. {s.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label htmlFor="sectionSelect">단원</Label>
+            <select
+              id="sectionSelect"
+              value={selectedSection}
+              onChange={(event) => handleSectionChange(event.target.value)}
+              className={selectClassName}
+            >
+              <option value="">단원 선택</option>
+              {sections.map((s) => (
+                <option key={s.code} value={s.code}>
+                  {s.code}. {s.name}
+                </option>
+              ))}
+            </select>
           </div>
         )}
 
         {/* Lesson */}
         {filteredLessons.length > 0 && (
           <div className="space-y-1">
-            <Label>레슨</Label>
-            <Select onValueChange={setSelectedLessonId} value={selectedLessonId}>
-              <SelectTrigger>
-                <SelectValue placeholder="레슨 선택" />
-              </SelectTrigger>
-              <SelectContent>
-                {filteredLessons.map((l) => (
-                  <SelectItem key={l.id} value={l.id}>
-                    {l.code}. {l.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label htmlFor="lessonId">레슨</Label>
+            <select
+              id="lessonId"
+              name="lessonId"
+              value={selectedLessonId}
+              onChange={(event) => setSelectedLessonId(event.target.value)}
+              className={selectClassName}
+            >
+              <option value="">레슨 선택</option>
+              {filteredLessons.map((l) => (
+                <option key={l.id} value={l.id}>
+                  {l.code}. {l.name}
+                </option>
+              ))}
+            </select>
           </div>
         )}
 
@@ -287,32 +293,38 @@ export function ReportForm({ learners, lessons, defaultValues, mode = "create" }
 
       {/* Progress status */}
       <div className="space-y-1">
-        <Label>진행 상태</Label>
-        <Select onValueChange={setProgressStatus}>
-          <SelectTrigger>
-            <SelectValue placeholder="선택 안 함" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="진행중">진행중</SelectItem>
-            <SelectItem value="완료">완료</SelectItem>
-            <SelectItem value="중단">중단</SelectItem>
-            <SelectItem value="보류">보류</SelectItem>
-          </SelectContent>
-        </Select>
+        <Label htmlFor="progressStatus">진행 상태</Label>
+        <select
+          id="progressStatus"
+          name="progressStatus"
+          defaultValue={defaultValues?.progressStatus ?? ""}
+          className={selectClassName}
+        >
+          <option value="">선택 안 함</option>
+          <option value="진행중">진행중</option>
+          <option value="완료">완료</option>
+          <option value="중단">중단</option>
+          <option value="보류">보류</option>
+        </select>
         <FieldError errors={state.errors.progressStatus} />
       </div>
 
       {/* Assessment levels — collapsible */}
-      <details className="rounded-lg bg-secondary p-3 group">
+      <details className="rounded-lg bg-secondary p-3 group" open={showDetailFields}>
         <summary className="text-sm font-medium cursor-pointer select-none flex items-center justify-between">
           평가 및 상세 (선택사항)
           <span className="text-xs text-muted-foreground group-open:hidden">펼치기</span>
         </summary>
         <div className="space-y-3 mt-3">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <LevelSelect name="understandingLevel" label="이해도" defaultValue={defaultValues?.understandingLevel} />
-            <LevelSelect name="participationLevel" label="참여도" defaultValue={defaultValues?.participationLevel} />
-            <LevelSelect name="careLevel" label="돌봄 수준" defaultValue={defaultValues?.careLevel} />
+            <LevelSelect name="understandingLevel" label="이해도 (1~5점)" defaultValue={defaultValues?.understandingLevel} />
+            <LevelSelect name="participationLevel" label="참여도 (1~5점)" defaultValue={defaultValues?.participationLevel} />
+            <LevelSelect
+              name="careLevel"
+              label="후속 돌봄 필요도 (1~5점)"
+              helperText="높을수록 연락, 면담, 기도 등 후속 돌봄이 더 필요합니다."
+              defaultValue={defaultValues?.careLevel}
+            />
           </div>
 
           {/* Leader's notes */}

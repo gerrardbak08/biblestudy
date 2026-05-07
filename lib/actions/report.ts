@@ -39,6 +39,12 @@ export async function createReport(
 
   const data = result.data;
 
+  // Verify learnerId belongs to this leader (prevent cross-leader manipulation)
+  const learner = await prisma.learner.findUnique({ where: { id: data.learnerId } });
+  if (!learner || learner.leaderId !== session.user.id) {
+    return { errors: {}, message: "권한이 없습니다." };
+  }
+
   try {
     await prisma.studyReport.create({
       data: {
@@ -111,6 +117,12 @@ export async function updateReport(
   }
 
   const data = result.data;
+
+  // Verify learnerId belongs to this leader (prevent cross-leader manipulation)
+  const learner = await prisma.learner.findUnique({ where: { id: data.learnerId } });
+  if (!learner || learner.leaderId !== session.user.id) {
+    return { errors: {}, message: "권한이 없습니다." };
+  }
 
   try {
     await prisma.studyReport.update({

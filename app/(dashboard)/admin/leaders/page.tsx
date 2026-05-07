@@ -1,13 +1,11 @@
 // app/(dashboard)/admin/leaders/page.tsx
-// Admin: leader list — bento card table, section header, CTA
+// Admin: registered leader monitoring
 
 import { Header } from "@/components/layout/Header";
 import { getAdminLeaders } from "@/lib/queries/admin";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import Link from "next/link";
-import { Plus } from "lucide-react";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
@@ -17,28 +15,21 @@ export default async function AdminLeadersPage() {
 
   return (
     <>
-      <Header title="리더 관리" subtitle={`${leaders.length}명`} />
+      <Header title="리더 현황" subtitle={`가입 리더 ${leaders.length}명`} />
       <div className="p-4 md:p-8 max-w-[1200px] space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="section-header !mb-0">
-            <span className="section-number" aria-hidden="true">1</span>
-            <h3 className="section-title">리더 목록</h3>
+        <div className="section-header !mb-0">
+          <span className="section-number" aria-hidden="true">1</span>
+          <div>
+            <h3 className="section-title">가입 리더 목록</h3>
+            <p className="section-desc">리더는 회원가입으로 등록되며, 관리자는 현황을 모니터링합니다.</p>
           </div>
-          <Link href="/admin/leaders/new">
-            <Button className="gap-1.5">
-              <Plus className="h-4 w-4" />
-              리더 추가
-            </Button>
-          </Link>
         </div>
 
         {leaders.length === 0 ? (
           <EmptyState
             icon="leaders"
-            title="등록된 리더가 없습니다"
-            description="성경공부 진행자를 등록하여 교육생 관리를 시작하세요."
-            actionLabel="리더 추가"
-            actionHref="/admin/leaders/new"
+            title="가입한 리더가 없습니다"
+            description="리더가 회원가입을 완료하면 이곳에 표시됩니다."
           />
         ) : (
           <div className="bento-card !p-0 overflow-hidden">

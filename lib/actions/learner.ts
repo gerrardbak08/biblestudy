@@ -20,6 +20,7 @@ export async function createLearner(
 
   const raw = {
     name: formData.get("name"),
+    institution: formData.get("institution"),
     phone: formData.get("phone") || undefined,
     notes: formData.get("notes") || undefined,
   };
@@ -29,11 +30,12 @@ export async function createLearner(
     return { errors: result.error.flatten().fieldErrors };
   }
 
-  const { name, phone, notes } = result.data;
+  const { name, institution, phone, notes } = result.data;
 
   await prisma.learner.create({
     data: {
       name,
+      institution,
       phone: phone || null,
       notes: notes || null,
       leaderId: session.user.id,
@@ -63,6 +65,7 @@ export async function updateLearner(
 
   const raw = {
     name: formData.get("name"),
+    institution: formData.get("institution"),
     phone: formData.get("phone") || undefined,
     notes: formData.get("notes") || undefined,
   };
@@ -72,12 +75,13 @@ export async function updateLearner(
     return { errors: result.error.flatten().fieldErrors };
   }
 
-  const { name, phone, notes } = result.data;
+  const { name, institution, phone, notes } = result.data;
 
   await prisma.learner.update({
     where: { id },
     data: {
       name,
+      institution,
       phone: phone || null,
       notes: notes || null,
     },

@@ -21,10 +21,10 @@ export default function LoginPage() {
     <div className="w-full max-w-[400px]">
       {/* Brand + value proposition */}
       <div className="text-center mb-10">
-        <div className="h-12 w-12 rounded-2xl bg-primary flex items-center justify-center mx-auto mb-5" aria-hidden="true">
-          <span className="text-white text-lg font-bold">SG</span>
-        </div>
-        <h1 className="text-2xl font-bold tracking-tight">
+        <p className="mx-auto mb-5 max-w-[320px] text-base font-semibold leading-snug text-primary break-keep">
+          사랑과평안의교회 성경공부 관리현황
+        </p>
+        <h1 className="text-2xl font-bold">
           성경공부 교육 현황을
           <br />
           <span className="text-primary">한눈에</span> 관리하세요

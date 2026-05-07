@@ -30,16 +30,18 @@ const actions = [
 
 export function QuickActions() {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
       {actions.map((action) => (
-        <Link key={action.href} href={action.href}>
-          <div className="bento-card group cursor-pointer">
-            <div className={`h-10 w-10 rounded-xl ${action.accent} flex items-center justify-center mb-3`}>
+        <Link key={action.href} href={action.href} className="block">
+          <div className="bento-card group flex cursor-pointer items-center gap-3 !p-4 sm:block sm:!p-5">
+            <div className={`h-10 w-10 rounded-xl ${action.accent} flex shrink-0 items-center justify-center sm:mb-3`}>
               <action.icon className="h-5 w-5" />
             </div>
-            <h3 className="font-semibold text-sm mb-0.5">{action.label}</h3>
-            <p className="text-xs text-muted-foreground">{action.description}</p>
-            <div className="mt-3 flex items-center text-xs font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="min-w-0 flex-1">
+              <h3 className="font-semibold text-sm mb-0.5 truncate">{action.label}</h3>
+              <p className="text-xs text-muted-foreground truncate">{action.description}</p>
+            </div>
+            <div className="ml-auto flex shrink-0 items-center text-xs font-medium text-primary opacity-100 transition-opacity sm:ml-0 sm:mt-3 sm:opacity-0 sm:group-hover:opacity-100">
               바로가기
               <ArrowRight className="h-3 w-3 ml-1" />
             </div>

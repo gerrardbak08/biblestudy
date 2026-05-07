@@ -4,6 +4,7 @@
 import { prisma } from "@/lib/prisma";
 import { getProgressStats } from "@/lib/progress";
 import { DEPT_REPORTS_LIMIT, CHART_WEEKS } from "@/lib/constants";
+import { getCurrentWeekStart } from "@/lib/dates";
 
 /** Department dashboard stats */
 export async function getDeptDashboard(departmentId: string | null) {
@@ -51,7 +52,9 @@ export async function getDeptDashboard(departmentId: string | null) {
 
 /** Leaders in a department */
 export async function getDeptLeaders(departmentId: string | null) {
-  return prisma.user.findMany({
+  const weekStart = getCurrentWeekStart();
+
+  const leaders = await prisma.user.findMany({
     where: { role: "LEADER", departmentId: departmentId ?? undefined },
     select: {
       id: true,
@@ -59,9 +62,19 @@ export async function getDeptLeaders(departmentId: string | null) {
       loginId: true,
       phone: true,
       _count: { select: { learners: true, reports: true } },
+      reports: {
+        where: { weekDate: { gte: weekStart } },
+        select: { id: true },
+        take: 1,
+      },
     },
     orderBy: { name: "asc" },
   });
+
+  return leaders.map(({ reports, ...leader }) => ({
+    ...leader,
+    submittedThisWeek: reports.length > 0,
+  }));
 }
 
 /** Recent reports in a department */

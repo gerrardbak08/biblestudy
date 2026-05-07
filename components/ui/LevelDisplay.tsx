@@ -1,5 +1,5 @@
 // components/ui/LevelDisplay.tsx
-// Renders a 1-5 level as filled/empty circles, e.g. "●●●○○ (3/5)"
+// Renders a 1-5 score as filled/empty circles, e.g. "●●●○○ (3점/5점)"
 
 interface LevelDisplayProps {
   level: number | null;
@@ -13,7 +13,7 @@ export function LevelDisplay({ level, label }: LevelDisplayProps) {
       {level ? (
         <span className="text-sm font-medium">
           {"●".repeat(level)}{"○".repeat(5 - level)}{" "}
-          <span className="text-muted-foreground">({level}/5)</span>
+          <span className="text-muted-foreground">({level}점/5점)</span>
         </span>
       ) : (
         <span className="text-sm text-muted-foreground">미입력</span>

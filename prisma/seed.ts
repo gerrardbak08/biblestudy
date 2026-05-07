@@ -353,26 +353,27 @@ async function main() {
 
   // 5. Seed learners
   const learnerNames = [
-    { name: "이수진", phone: "010-1111-1001", notes: "신앙 성장에 열정적", leaderId: leader.id },
-    { name: "박민서", phone: "010-1111-1002", notes: "조용하지만 성실", leaderId: leader.id },
-    { name: "최유진", phone: "010-1111-1003", notes: "질문이 많음", leaderId: leader.id },
-    { name: "정하윤", phone: "010-2222-2001", notes: null, leaderId: leader2.id },
-    { name: "강서윤", phone: "010-2222-2002", notes: "새신자, 기초부터", leaderId: leader2.id },
-    { name: "윤도현", phone: "010-3333-3001", notes: "2청년부 소속", leaderId: leader3.id },
-    { name: "임서연", phone: "010-3333-3002", notes: null, leaderId: leader3.id },
-    { name: "한지우", phone: "010-3333-3003", notes: "출석 불규칙", leaderId: leader3.id },
-    { name: "오태준", phone: "010-4444-4001", notes: "장년부, 열심", leaderId: leader4.id },
-    { name: "신미영", phone: "010-4444-4002", notes: "목양 필요", leaderId: leader4.id },
+    { name: "이수진", institution: "청년부", phone: "010-1111-1001", notes: "신앙 성장에 열정적", leaderId: leader.id },
+    { name: "박민서", institution: "외부or기타", phone: "010-1111-1002", notes: "조용하지만 성실", leaderId: leader.id },
+    { name: "최유진", institution: "청년부", phone: "010-1111-1003", notes: "질문이 많음", leaderId: leader.id },
+    { name: "정하윤", institution: "청년부", phone: "010-2222-2001", notes: null, leaderId: leader2.id },
+    { name: "강서윤", institution: "외부or기타", phone: "010-2222-2002", notes: "새신자, 기초부터", leaderId: leader2.id },
+    { name: "윤도현", institution: "1장년", phone: "010-3333-3001", notes: "1장년 소속", leaderId: leader3.id },
+    { name: "임서연", institution: "1장년", phone: "010-3333-3002", notes: null, leaderId: leader3.id },
+    { name: "한지우", institution: "외부or기타", phone: "010-3333-3003", notes: "출석 불규칙", leaderId: leader3.id },
+    { name: "오태준", institution: "2장년", phone: "010-4444-4001", notes: "장년부, 열심", leaderId: leader4.id },
+    { name: "신미영", institution: "중고등부", phone: "010-4444-4002", notes: "목양 필요", leaderId: leader4.id },
   ];
 
   const learners = [];
   for (const l of learnerNames) {
     const learner = await prisma.learner.upsert({
       where: { id: `seed-learner-${l.name}` },
-      update: {},
+      update: { institution: l.institution },
       create: {
         id: `seed-learner-${l.name}`,
         name: l.name,
+        institution: l.institution,
         phone: l.phone,
         notes: l.notes,
         leaderId: l.leaderId,

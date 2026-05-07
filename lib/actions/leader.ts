@@ -38,7 +38,7 @@ export async function createLeader(
   const existing = await prisma.user.findUnique({ where: { loginId } });
   if (existing) {
     return {
-      errors: { loginId: ["이미 사용 중인 이메일입니다."] },
+      errors: { loginId: ["이미 사용 중인 아이디입니다."] },
     };
   }
 
@@ -90,7 +90,7 @@ export async function updateLeader(
     where: { loginId, NOT: { id: parsedId.data } },
   });
   if (existing) {
-    return { errors: { loginId: ["이미 사용 중인 이메일입니다."] } };
+    return { errors: { loginId: ["이미 사용 중인 아이디입니다."] } };
   }
 
   await prisma.user.update({

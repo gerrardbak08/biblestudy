@@ -23,11 +23,11 @@ export default async function LeaderDashboardPage() {
   return (
     <>
       <Header title="대시보드" subtitle={`${session.user.name} 진행자`} />
-      <div className="p-4 md:p-8 space-y-0 max-w-3xl">
+      <div className="w-full max-w-3xl px-4 py-5 md:p-8 space-y-0">
 
         {/* ── Hero: Greeting + primary CTA ── */}
-        <section className="mb-8 animate-fade-up" aria-labelledby="hero-greeting">
-          <h2 id="hero-greeting" className="text-2xl md:text-3xl font-bold tracking-tight">
+        <section className="mb-7 md:mb-8 animate-fade-up" aria-labelledby="hero-greeting">
+          <h2 id="hero-greeting" className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight leading-tight">
             안녕하세요,
             <br className="sm:hidden" />
             <span className="text-primary"> {session.user.name}</span> 진행자님
@@ -38,8 +38,8 @@ export default async function LeaderDashboardPage() {
               : "이번 주 성경공부 보고서를 제출해주세요."
             }
           </p>
-          <Link href="/leader/reports/new">
-            <Button size="lg" className="gap-2">
+          <Link href="/leader/reports/new" className="block sm:inline-block">
+            <Button size="lg" className="w-full sm:w-auto gap-2">
               <PenLine className="h-4 w-4" />
               보고서 제출하기
             </Button>
@@ -49,7 +49,7 @@ export default async function LeaderDashboardPage() {
         <div className="section-divider" />
 
         {/* ── Quick actions ── */}
-        <section className="mb-8 animate-fade-up" style={{ animationDelay: "100ms" }}>
+        <section className="mb-8 md:mb-12 animate-fade-up" style={{ animationDelay: "100ms" }}>
           <div className="section-header">
             <span className="section-number" aria-hidden="true">1</span>
             <h3 className="section-title">빠른 실행</h3>
@@ -57,10 +57,10 @@ export default async function LeaderDashboardPage() {
           <QuickActions />
         </section>
 
-        <div className="section-divider" />
+        <div className="section-divider !my-8 md:!my-12" />
 
         {/* ── Weekly progress ── */}
-        <section className="mb-8 animate-fade-up" style={{ animationDelay: "200ms" }}>
+        <section className="mb-4 pt-1 md:pt-2 animate-fade-up" style={{ animationDelay: "200ms" }}>
           <div className="section-header">
             <span className="section-number" aria-hidden="true">2</span>
             <h3 className="section-title">이번 주 현황</h3>

@@ -27,7 +27,11 @@ export function AppShell({ role, userName, children }: AppShellProps) {
       </div>
 
       {/* Main content */}
-      <main id="main-content" className="flex-1 flex flex-col overflow-auto pb-20 md:pb-0" tabIndex={-1}>
+      <main
+        id="main-content"
+        className="flex-1 flex min-w-0 flex-col overflow-auto pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0"
+        tabIndex={-1}
+      >
         {children}
       </main>
 

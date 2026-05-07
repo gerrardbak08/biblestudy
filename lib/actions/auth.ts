@@ -43,7 +43,7 @@ export async function login(
   return { errors: {} }; // unreachable on success (redirect happens)
 }
 
-// Sign up — creates a new LEADER account with department
+// Sign up — creates a new LEADER account, then signs in immediately
 export async function signup(
   _prevState: FormState,
   formData: FormData
@@ -52,7 +52,7 @@ export async function signup(
     loginId: formData.get("loginId"),
     password: formData.get("password"),
     name: formData.get("name"),
-    departmentId: formData.get("departmentId"),
+    departmentName: formData.get("departmentName"),
   };
 
   const result = signupSchema.safeParse(raw);
@@ -60,20 +60,19 @@ export async function signup(
     return { errors: result.error.flatten().fieldErrors };
   }
 
-  const { loginId, password, name, departmentId } = result.data;
+  const { loginId, password, name, departmentName } = result.data;
 
   const existing = await prisma.user.findUnique({ where: { loginId } });
   if (existing) {
     return { errors: { loginId: ["이미 사용 중인 아이디입니다."] } };
   }
 
-  // departmentId may be a department name from signup form — find actual ID
-  const department = await prisma.department.findFirst({
-    where: { OR: [{ id: departmentId }, { name: departmentId }] },
+  const normalizedDepartmentName = departmentName.trim();
+  const department = await prisma.department.upsert({
+    where: { name: normalizedDepartmentName },
+    update: {},
+    create: { name: normalizedDepartmentName },
   });
-  if (!department) {
-    return { errors: { departmentId: ["유효하지 않은 소속입니다."] } };
-  }
 
   const hashed = await bcrypt.hash(password, 10);
   await prisma.user.create({
@@ -86,7 +85,23 @@ export async function signup(
     },
   });
 
-  redirect("/login");
+  try {
+    await signIn("credentials", {
+      loginId,
+      password,
+      redirectTo: "/",
+    });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return {
+        errors: {},
+        message: "가입은 완료되었지만 자동 로그인에 실패했습니다. 로그인 화면에서 다시 로그인해주세요.",
+      };
+    }
+    throw error;
+  }
+
+  return { errors: {} };
 }
 
 // Changes the currently authenticated user's password

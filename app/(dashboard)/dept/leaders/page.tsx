@@ -36,23 +36,41 @@ export default async function DeptLeadersPage() {
                   <TableHead>아이디</TableHead>
                   <TableHead>연락처</TableHead>
                   <TableHead>교육생</TableHead>
+                  <TableHead>이번 주</TableHead>
                   <TableHead>보고서</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {leaders.map((leader) => (
-                  <TableRow key={leader.id}>
-                    <TableCell className="font-medium">{leader.name}</TableCell>
-                    <TableCell className="text-muted-foreground">{leader.loginId}</TableCell>
-                    <TableCell>{leader.phone ?? "-"}</TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">{leader._count.learners}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">{leader._count.reports}</Badge>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {leaders.map((leader) => {
+                  const hasLearners = leader._count.learners > 0;
+                  const statusLabel = !hasLearners
+                    ? "교육생 없음"
+                    : leader.submittedThisWeek
+                      ? "제출완료"
+                      : "미제출";
+                  const statusVariant = !hasLearners
+                    ? "outline"
+                    : leader.submittedThisWeek
+                      ? "success"
+                      : "warning";
+
+                  return (
+                    <TableRow key={leader.id}>
+                      <TableCell className="font-medium">{leader.name}</TableCell>
+                      <TableCell className="text-muted-foreground">{leader.loginId}</TableCell>
+                      <TableCell>{leader.phone ?? "-"}</TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">{leader._count.learners}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={statusVariant}>{statusLabel}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">{leader._count.reports}</Badge>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </div>

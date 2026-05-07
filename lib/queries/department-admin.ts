@@ -3,7 +3,7 @@
 
 import { prisma } from "@/lib/prisma";
 
-/** All departments with member counts */
+/** All departments with linked account counts */
 export async function getAdminDepartments() {
   return prisma.department.findMany({
     include: {
@@ -13,7 +13,7 @@ export async function getAdminDepartments() {
   });
 }
 
-/** Single department by ID */
+/** Single department by ID with linked account count */
 export async function getDepartmentByIdAdmin(id: string) {
   return prisma.department.findUnique({
     where: { id },

@@ -52,7 +52,10 @@ export default async function AdminDepartmentsPage() {
                 <TableHeader>
                   <TableRow className="bg-muted/30">
                     <TableHead>부서명</TableHead>
-                    <TableHead>소속 인원</TableHead>
+                    <TableHead>
+                      <div>등록 계정</div>
+                      <div className="text-[11px] font-normal text-muted-foreground">리더/부서장</div>
+                    </TableHead>
                     <TableHead className="w-28"></TableHead>
                   </TableRow>
                 </TableHeader>
@@ -60,7 +63,7 @@ export default async function AdminDepartmentsPage() {
                   {departments.map((dept) => (
                     <TableRow key={dept.id}>
                       <TableCell className="font-medium">{dept.name}</TableCell>
-                      <TableCell>{dept._count.users}명</TableCell>
+                      <TableCell>{dept._count.users}개</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Link

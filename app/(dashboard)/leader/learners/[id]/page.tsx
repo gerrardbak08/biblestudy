@@ -73,6 +73,10 @@ export default async function LearnerDetailPage({ params }: PageProps) {
               {learner.name}
             </p>
             <p>
+              <span className="text-muted-foreground">기관:</span>{" "}
+              {learner.institution ?? "-"}
+            </p>
+            <p>
               <span className="text-muted-foreground">연락처:</span>{" "}
               {learner.phone ?? "-"}
             </p>

@@ -56,20 +56,20 @@ export function ProgressMatrix({ matrix, courseInfo }: ProgressMatrixProps) {
         return (
           <div key={leader.leaderName} className="bento-card !p-0 overflow-hidden">
             {/* Leader header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-border/40">
-              <div className="flex items-center gap-3">
-                <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center">
+            <div className="flex items-center justify-between gap-3 px-4 py-4 border-b border-border/40 sm:px-5">
+              <div className="flex min-w-0 items-center gap-3">
+                <div className="h-9 w-9 rounded-xl bg-primary/10 flex shrink-0 items-center justify-center">
                   <Users className="h-4 w-4 text-primary" />
                 </div>
-                <div>
-                  <h4 className="font-semibold text-sm">{leader.leaderName}</h4>
+                <div className="min-w-0">
+                  <h4 className="truncate text-sm font-semibold">{leader.leaderName}</h4>
                   <p className="text-[11px] text-muted-foreground">
                     {leader.department} · {leader.learners.length}명
                   </p>
                 </div>
               </div>
-              <div className="text-right">
-                <p className="text-2xl font-bold text-primary tabular-nums">{totalProgress}%</p>
+              <div className="shrink-0 text-right">
+                <p className="text-xl font-bold text-primary tabular-nums sm:text-2xl">{totalProgress}%</p>
                 <p className="text-[10px] text-muted-foreground">전체 진도</p>
               </div>
             </div>
@@ -79,7 +79,7 @@ export function ProgressMatrix({ matrix, courseInfo }: ProgressMatrixProps) {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border/30 bg-muted/30">
-                    <th className="text-left py-2.5 px-5 text-xs font-medium text-muted-foreground">교육생</th>
+                    <th className="text-left py-2.5 px-4 text-xs font-medium text-muted-foreground sm:px-5">교육생</th>
                     {courseInfo.map((c) => (
                       <th key={c.id} className="text-left py-2.5 px-3 text-xs font-medium text-muted-foreground min-w-[140px]">
                         <div>{c.name}</div>
@@ -94,7 +94,7 @@ export function ProgressMatrix({ matrix, courseInfo }: ProgressMatrixProps) {
                       key={learner.name}
                       className={idx < leader.learners.length - 1 ? "border-b border-border/20" : ""}
                     >
-                      <td className="py-3 px-5 font-medium text-sm">{learner.name}</td>
+                      <td className="py-3 px-4 font-medium text-sm sm:px-5">{learner.name}</td>
                       {learner.courses.map((cp) => (
                         <td key={cp.courseId} className="py-3 px-3">
                           <div className="flex items-center gap-2">
