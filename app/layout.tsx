@@ -36,8 +36,8 @@ export const metadata: Metadata = {
   },
   description: siteDescription,
   icons: {
-    icon: "/icon.png",
-    apple: "/apple-touch-icon.png",
+    icon: "/icon-v2.png",
+    apple: "/apple-touch-icon-v2.png",
   },
   openGraph: {
     title: siteTitle,
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og-image.png",
+        url: "/og-image-v2.png",
         width: 1200,
         height: 630,
         alt: siteTitle,
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteTitle,
     description: siteDescription,
-    images: ["/og-image.png"],
+    images: ["/og-image-v2.png"],
   },
 };
 
