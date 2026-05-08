@@ -20,9 +20,47 @@ const notoSansKR = Noto_Sans_KR({
   display: "swap",
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_APP_URL ??
+  "https://biblestudy-web-production.up.railway.app";
+const siteTitle = "사랑과평안의교회 성경공부 관리현황";
+const siteDescription =
+  "리더 보고, 교육생 진도, 부서별 대시보드를 한 곳에서 기록하고 확인합니다.";
+
 export const metadata: Metadata = {
-  title: "성경공부 관리 시스템",
-  description: "교회 성경공부 진행 현황 및 보고 관리 플랫폼",
+  metadataBase: new URL(siteUrl),
+  applicationName: siteTitle,
+  title: {
+    default: siteTitle,
+    template: `%s | ${siteTitle}`,
+  },
+  description: siteDescription,
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-touch-icon.png",
+  },
+  openGraph: {
+    title: siteTitle,
+    description: siteDescription,
+    url: "/",
+    siteName: siteTitle,
+    locale: "ko_KR",
+    type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: siteTitle,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
